@@ -1,1 +1,1 @@
-Yet another COVID-19 Corona LIVE statistics tracker 
+Yet Another COVID-19 Corona LIVE Statistics Tracker

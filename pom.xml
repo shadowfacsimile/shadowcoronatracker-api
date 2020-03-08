@@ -13,7 +13,7 @@
 	<artifactId>ShadowCoronaTracker</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ShadowCoronaTracker</name>
-	<description>Yet Another Corona COVID-19 Live Statistics Tracker</description>
+	<description>Yet Another COVID-19 Corona LIVE Statistics Tracker</description>
 
 	<properties>
 		<java.version>1.8</java.version>

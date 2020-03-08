@@ -1,4 +1,4 @@
-package com.prasilius.coronatracker;
+package com.shadow.coronatracker.tests;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
