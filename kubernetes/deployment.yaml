@@ -1,0 +1,32 @@
+# Update <REGISTRY> <NAMESPACE> values before use
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shadow-corona-tracker
+  labels:
+    app: shadow-corona-tracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shadow-corona-tracker
+  template:
+    metadata:
+      labels:
+        app: shadow-corona-tracker
+    spec:
+      containers:
+      - name: shadow-corona-tracker
+        image: <REGISTRY>/<NAMESPACE>/myapp:v1.0.0
+        ports:
+        - containerPort: 9080
+        imagePullPolicy: Always
+        env:
+        - name: CLOUDANT_URL
+          valueFrom:
+            secretKeyRef:
+              name: cloudant
+              key: url
+              optional: true
+
+

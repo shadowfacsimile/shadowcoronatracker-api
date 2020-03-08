@@ -1,0 +1,7 @@
+---
+applications:
+ - name: ShadowCoronaTracker
+   host: shadowcoronatracker-api
+   path: target/ShadowCoronaTracker.war
+   memory: 256M
+   instances: 1
