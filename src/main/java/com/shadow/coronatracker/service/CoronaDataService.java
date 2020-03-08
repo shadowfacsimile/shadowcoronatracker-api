@@ -24,7 +24,6 @@ import com.shadow.coronatracker.model.CoronaStatsCollection;
 import com.shadow.coronatracker.model.CoronaStatsResponse;
 import com.shadow.coronatracker.model.CoronaSummaryStats;
 import com.shadow.coronatracker.model.Statistics;
-import com.shadow.coronatracker.util.CoronaTrackerUtil;
 
 @Service
 public class CoronaDataService {
@@ -37,12 +36,12 @@ public class CoronaDataService {
 
 		CoronaStatsCollection coronaStatsCollection = new CoronaStatsCollection();
 
-		for (Entry<Statistics, String> url : CoronaTrackerUtil.getUrls().entrySet()) {
-			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url.getValue())).build();
-			LOGGER.info("Connecting to: " + url.getValue());
+		for (Statistics statistics : Statistics.values()) {
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(statistics.getUrl())).build();
+			LOGGER.info("Connecting to: " + statistics.getUrl());
 			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 			LOGGER.info("Response received " + response);
-			CoronaTrackerUtil.getParsers().get(url.getKey()).parse(response, coronaStatsCollection);
+			statistics.getParser().parse(response, coronaStatsCollection);
 		}
 
 		return createCoronaStatsFromCollection(coronaStatsCollection);
