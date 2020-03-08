@@ -1,1 +1,1 @@
-Yet Another COVID-19 Corona LIVE Statistics Tracker
+API For Yet Another COVID-19 Corona LIVE Statistics Tracker
