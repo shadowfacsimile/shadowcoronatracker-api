@@ -9,8 +9,8 @@ public class CoronaSummaryStats {
 	private int totalDeaths;
 	private int totalDeathsSinceYesterday;
 	private int totalRecoveries;
-	private String mortalityRate;
-	private String recoveryRate;
+	private double mortalityRate;
+	private double recoveryRate;
 	private List<String> countriesWithFirstCase;
 	private List<String> countriesWithFirstDeath;
 
@@ -54,19 +54,19 @@ public class CoronaSummaryStats {
 		this.totalRecoveries = totalRecoveries;
 	}
 
-	public String getMortalityRate() {
+	public double getMortalityRate() {
 		return mortalityRate;
 	}
 
-	public void setMortalityRate(String mortalityRate) {
+	public void setMortalityRate(double mortalityRate) {
 		this.mortalityRate = mortalityRate;
 	}
 
-	public String getRecoveryRate() {
+	public double getRecoveryRate() {
 		return recoveryRate;
 	}
 
-	public void setRecoveryRate(String recoveryRate) {
+	public void setRecoveryRate(double recoveryRate) {
 		this.recoveryRate = recoveryRate;
 	}
 

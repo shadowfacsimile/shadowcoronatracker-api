@@ -10,9 +10,9 @@ public class CoronaStats {
 	private int casesSinceYesterday;
 	private int deaths;
 	private int deathsSinceYesterday;
-	private String mortalityRate;
+	private double mortalityRate;
 	private int recoveries;
-	private String recoveryRate;
+	private double recoveryRate;
 	private boolean firstCaseReported;
 	private boolean firstDeathReported;
 
@@ -80,11 +80,11 @@ public class CoronaStats {
 		this.deathsSinceYesterday = deathsSinceYesterday;
 	}
 
-	public String getMortalityRate() {
+	public double getMortalityRate() {
 		return mortalityRate;
 	}
 
-	public void setMortalityRate(String mortalityRate) {
+	public void setMortalityRate(double mortalityRate) {
 		this.mortalityRate = mortalityRate;
 	}
 
@@ -96,11 +96,11 @@ public class CoronaStats {
 		this.recoveries = recoveries;
 	}
 
-	public String getRecoveryRate() {
+	public double getRecoveryRate() {
 		return recoveryRate;
 	}
 
-	public void setRecoveryRate(String recoveryRate) {
+	public void setRecoveryRate(double recoveryRate) {
 		this.recoveryRate = recoveryRate;
 	}
 

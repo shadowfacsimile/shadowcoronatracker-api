@@ -5,7 +5,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -50,8 +49,6 @@ public class CoronaDataService {
 
 	private CoronaStatsResponse createCoronaStatsFromCollection(final CoronaStatsCollection coronaStatsCollection) {
 
-		List<CoronaStats> coronaStats = new ArrayList<>();
-
 		Map<String, Integer> casesByCountry = coronaStatsCollection.getCoronaCasesStats().stream().collect(
 				Collectors.groupingBy(CoronaCasesStats::getCountry, Collectors.summingInt(CoronaCasesStats::getCases)));
 
@@ -76,16 +73,18 @@ public class CoronaDataService {
 		List<CoronaDeathsStats> firstDeathCountries = coronaStatsCollection.getCoronaDeathsStats().stream()
 				.filter(CoronaDeathsStats::isFirstDeathReported).collect(Collectors.toList());
 
+		List<CoronaStats> coronaStats = new ArrayList<>();
+
 		for (Entry<String, Integer> entry : casesByCountry.entrySet()) {
 			CoronaStats stats = new CoronaStats();
 			stats.setCountry(entry.getKey());
 			stats.setCases(entry.getValue());
 			stats.setCasesSinceYesterday(casesDeltaByCountry.get(entry.getKey()));
 			stats.setDeaths(deathsByCountry.get(entry.getKey()));
-			stats.setMortalityRate(CoronaTrackerUtil.f.format(100.0 * stats.getDeaths() / stats.getCases()) + "%");
+			stats.setMortalityRate((double) stats.getDeaths() / stats.getCases());
 			stats.setDeathsSinceYesterday(deathsDeltaByCountry.get(entry.getKey()));
 			stats.setRecoveries(recoveriesByCountry.get(entry.getKey()));
-			stats.setRecoveryRate(CoronaTrackerUtil.f.format(100.0 * stats.getRecoveries() / stats.getCases()) + "%");
+			stats.setRecoveryRate((double) stats.getRecoveries() / stats.getCases());
 			stats.setFirstCaseReported(firstCaseCountries.stream()
 					.filter(stat -> stat.getCountry().equalsIgnoreCase(entry.getKey())).count() > 0 ? true : false);
 			stats.setFirstDeathReported(firstDeathCountries.stream()
@@ -107,10 +106,10 @@ public class CoronaDataService {
 				coronaStats.stream().collect(Collectors.summingInt(CoronaStats::getDeathsSinceYesterday)));
 		coronaSummaryStats
 				.setTotalRecoveries(coronaStats.stream().collect(Collectors.summingInt(CoronaStats::getRecoveries)));
-		coronaSummaryStats.setMortalityRate(CoronaTrackerUtil.f
-				.format(100.0 * coronaSummaryStats.getTotalDeaths() / coronaSummaryStats.getTotalCases()) + "%");
-		coronaSummaryStats.setRecoveryRate(CoronaTrackerUtil.f
-				.format(100.0 * coronaSummaryStats.getTotalRecoveries() / coronaSummaryStats.getTotalCases()) + "%");
+		coronaSummaryStats
+				.setMortalityRate((double) coronaSummaryStats.getTotalDeaths() / coronaSummaryStats.getTotalCases());
+		coronaSummaryStats
+				.setRecoveryRate((double) coronaSummaryStats.getTotalRecoveries() / coronaSummaryStats.getTotalCases());
 		coronaSummaryStats.setCountriesWithFirstCase(coronaStats.stream().filter(stat -> stat.isFirstCaseReported())
 				.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getCountry()))
 				.map(stat -> stat.getCountry()).collect(Collectors.toList()));
