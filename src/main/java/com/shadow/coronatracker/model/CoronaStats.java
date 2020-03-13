@@ -10,7 +10,11 @@ public class CoronaStats {
 	private int casesSinceYesterday;
 	private int deaths;
 	private int deathsSinceYesterday;
+	private String mortalityRate;
 	private int recoveries;
+	private String recoveryRate;
+	private boolean firstCaseReported;
+	private boolean firstDeathReported;
 
 	public String getState() {
 		return state;
@@ -76,6 +80,14 @@ public class CoronaStats {
 		this.deathsSinceYesterday = deathsSinceYesterday;
 	}
 
+	public String getMortalityRate() {
+		return mortalityRate;
+	}
+
+	public void setMortalityRate(String mortalityRate) {
+		this.mortalityRate = mortalityRate;
+	}
+
 	public int getRecoveries() {
 		return recoveries;
 	}
@@ -84,12 +96,28 @@ public class CoronaStats {
 		this.recoveries = recoveries;
 	}
 
-	@Override
-	public String toString() {
-		return "CoronaStatsResponse [state=" + state + ", country=" + country + ", latitude=" + latitude
-				+ ", longitude=" + longitude + ", cases=" + cases + ", casesSinceYesterday=" + casesSinceYesterday
-				+ ", deaths=" + deaths + ", deathsSinceYesterday=" + deathsSinceYesterday + ", recoveries=" + recoveries
-				+ "]";
+	public String getRecoveryRate() {
+		return recoveryRate;
+	}
+
+	public void setRecoveryRate(String recoveryRate) {
+		this.recoveryRate = recoveryRate;
+	}
+
+	public boolean isFirstCaseReported() {
+		return firstCaseReported;
+	}
+
+	public void setFirstCaseReported(boolean firstCaseReported) {
+		this.firstCaseReported = firstCaseReported;
+	}
+
+	public boolean isFirstDeathReported() {
+		return firstDeathReported;
+	}
+
+	public void setFirstDeathReported(boolean firstDeathReported) {
+		this.firstDeathReported = firstDeathReported;
 	}
 
 }

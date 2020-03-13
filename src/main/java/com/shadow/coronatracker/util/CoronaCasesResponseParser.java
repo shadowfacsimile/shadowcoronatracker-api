@@ -21,7 +21,7 @@ public class CoronaCasesResponseParser implements ResponseParser {
 		for (CSVRecord record : CoronaTrackerUtil.convertResponseToCSVRecord(response)) {
 			CoronaCasesStats casesStats = new CoronaCasesStats();
 			casesStats.setState(record.get(0));
-			casesStats.setCountry(record.get(1).equalsIgnoreCase("Others") ? "Diamond Princess Cruise" : record.get(1));
+			casesStats.setCountry(record.get(1));
 			casesStats.setLatitude(Float.valueOf(record.get(2)));
 			casesStats.setLongitude(Float.valueOf(record.get(3)));
 			String cases = StringUtils.isBlank(record.get(record.size() - 1)) ? "0" : record.get(record.size() - 1);
@@ -29,6 +29,9 @@ public class CoronaCasesResponseParser implements ResponseParser {
 			String casesSinceYesterday = StringUtils.isBlank(record.get(record.size() - 2)) ? "0"
 					: record.get(record.size() - 2);
 			casesStats.setCasesSinceYesterday(casesStats.getCases() - Integer.valueOf(casesSinceYesterday));
+			casesStats.setFirstCaseReported(record.get(record.size() - 2).equalsIgnoreCase("0")
+					&& StringUtils.isNotBlank(record.get(record.size() - 1))
+					&& !record.get(record.size() - 1).equalsIgnoreCase("0"));
 			coronaCasesStats.add(casesStats);
 		}
 

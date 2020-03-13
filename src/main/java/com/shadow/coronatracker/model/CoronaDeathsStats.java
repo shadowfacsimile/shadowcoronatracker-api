@@ -8,6 +8,7 @@ public class CoronaDeathsStats {
 	private float longitude;
 	private int deaths;
 	private int deathsSinceYesterday;
+	private boolean firstDeathReported;
 
 	public String getState() {
 		return state;
@@ -57,10 +58,12 @@ public class CoronaDeathsStats {
 		this.deathsSinceYesterday = deathsSinceYesterday;
 	}
 
-	@Override
-	public String toString() {
-		return "CoronaDeathsStats [state=" + state + ", country=" + country + ", latitude=" + latitude + ", longitude="
-				+ longitude + ", deaths=" + deaths + ", deathsSinceYesterday=" + deathsSinceYesterday + "]";
+	public boolean isFirstDeathReported() {
+		return firstDeathReported;
+	}
+
+	public void setFirstDeathReported(boolean firstDeathReported) {
+		this.firstDeathReported = firstDeathReported;
 	}
 
 }

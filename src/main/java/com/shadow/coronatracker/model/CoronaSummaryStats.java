@@ -1,5 +1,7 @@
 package com.shadow.coronatracker.model;
 
+import java.util.List;
+
 public class CoronaSummaryStats {
 
 	private int totalCases;
@@ -8,6 +10,9 @@ public class CoronaSummaryStats {
 	private int totalDeathsSinceYesterday;
 	private int totalRecoveries;
 	private String mortalityRate;
+	private String recoveryRate;
+	private List<String> countriesWithFirstCase;
+	private List<String> countriesWithFirstDeath;
 
 	public int getTotalCases() {
 		return totalCases;
@@ -57,11 +62,28 @@ public class CoronaSummaryStats {
 		this.mortalityRate = mortalityRate;
 	}
 
-	@Override
-	public String toString() {
-		return "CoronaSummaryStats [totalCases=" + totalCases + ", totalCasesSinceYesterday=" + totalCasesSinceYesterday
-				+ ", totalDeaths=" + totalDeaths + ", totalDeathsSinceYesterday=" + totalDeathsSinceYesterday
-				+ ", totalRecoveries=" + totalRecoveries + ", mortalityRate=" + mortalityRate + "]";
+	public String getRecoveryRate() {
+		return recoveryRate;
+	}
+
+	public void setRecoveryRate(String recoveryRate) {
+		this.recoveryRate = recoveryRate;
+	}
+
+	public List<String> getCountriesWithFirstCase() {
+		return countriesWithFirstCase;
+	}
+
+	public void setCountriesWithFirstCase(List<String> countriesWithFirstCase) {
+		this.countriesWithFirstCase = countriesWithFirstCase;
+	}
+
+	public List<String> getCountriesWithFirstDeath() {
+		return countriesWithFirstDeath;
+	}
+
+	public void setCountriesWithFirstDeath(List<String> countriesWithFirstDeath) {
+		this.countriesWithFirstDeath = countriesWithFirstDeath;
 	}
 
 }

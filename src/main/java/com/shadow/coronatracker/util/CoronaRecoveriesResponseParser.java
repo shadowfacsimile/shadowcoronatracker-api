@@ -21,10 +21,11 @@ public class CoronaRecoveriesResponseParser implements ResponseParser {
 		for (CSVRecord record : CoronaTrackerUtil.convertResponseToCSVRecord(response)) {
 			CoronaRecoveriesStats recoveriesStats = new CoronaRecoveriesStats();
 			recoveriesStats.setState(record.get(0));
-			recoveriesStats.setCountry(record.get(1).equalsIgnoreCase("Others") ? "Diamond Princess Cruise" : record.get(1));
+			recoveriesStats.setCountry(record.get(1));
 			recoveriesStats.setLatitude(Float.valueOf(record.get(2)));
 			recoveriesStats.setLongitude(Float.valueOf(record.get(3)));
-			String recoveries = StringUtils.isBlank(record.get(record.size() - 1)) ? "0" : record.get(record.size() - 1);
+			String recoveries = StringUtils.isBlank(record.get(record.size() - 1)) ? "0"
+					: record.get(record.size() - 1);
 			recoveriesStats.setRecoveries(Integer.valueOf(recoveries));
 			coronaRecoveriesStats.add(recoveriesStats);
 		}

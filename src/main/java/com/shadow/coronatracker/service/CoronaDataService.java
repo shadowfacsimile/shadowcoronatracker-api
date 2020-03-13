@@ -24,6 +24,7 @@ import com.shadow.coronatracker.model.CoronaStatsCollection;
 import com.shadow.coronatracker.model.CoronaStatsResponse;
 import com.shadow.coronatracker.model.CoronaSummaryStats;
 import com.shadow.coronatracker.model.Statistics;
+import com.shadow.coronatracker.util.CoronaTrackerUtil;
 
 @Service
 public class CoronaDataService {
@@ -69,14 +70,26 @@ public class CoronaDataService {
 				.collect(Collectors.groupingBy(CoronaRecoveriesStats::getCountry,
 						Collectors.summingInt(CoronaRecoveriesStats::getRecoveries)));
 
+		List<CoronaCasesStats> firstCaseCountries = coronaStatsCollection.getCoronaCasesStats().stream()
+				.filter(CoronaCasesStats::isFirstCaseReported).collect(Collectors.toList());
+
+		List<CoronaDeathsStats> firstDeathCountries = coronaStatsCollection.getCoronaDeathsStats().stream()
+				.filter(CoronaDeathsStats::isFirstDeathReported).collect(Collectors.toList());
+
 		for (Entry<String, Integer> entry : casesByCountry.entrySet()) {
 			CoronaStats stats = new CoronaStats();
 			stats.setCountry(entry.getKey());
 			stats.setCases(entry.getValue());
 			stats.setCasesSinceYesterday(casesDeltaByCountry.get(entry.getKey()));
 			stats.setDeaths(deathsByCountry.get(entry.getKey()));
+			stats.setMortalityRate(CoronaTrackerUtil.f.format(100.0 * stats.getDeaths() / stats.getCases()) + "%");
 			stats.setDeathsSinceYesterday(deathsDeltaByCountry.get(entry.getKey()));
 			stats.setRecoveries(recoveriesByCountry.get(entry.getKey()));
+			stats.setRecoveryRate(CoronaTrackerUtil.f.format(100.0 * stats.getRecoveries() / stats.getCases()) + "%");
+			stats.setFirstCaseReported(firstCaseCountries.stream()
+					.filter(stat -> stat.getCountry().equalsIgnoreCase(entry.getKey())).count() > 0 ? true : false);
+			stats.setFirstDeathReported(firstDeathCountries.stream()
+					.filter(stat -> stat.getCountry().equalsIgnoreCase(entry.getKey())).count() > 0 ? true : false);
 			coronaStats.add(stats);
 		}
 
@@ -84,8 +97,6 @@ public class CoronaDataService {
 	}
 
 	private CoronaStatsResponse createCoronaStatsResponse(final List<CoronaStats> coronaStats) {
-
-		DecimalFormat f = new DecimalFormat("##.00");
 
 		CoronaSummaryStats coronaSummaryStats = new CoronaSummaryStats();
 		coronaSummaryStats.setTotalCases(coronaStats.stream().collect(Collectors.summingInt(CoronaStats::getCases)));
@@ -96,8 +107,16 @@ public class CoronaDataService {
 				coronaStats.stream().collect(Collectors.summingInt(CoronaStats::getDeathsSinceYesterday)));
 		coronaSummaryStats
 				.setTotalRecoveries(coronaStats.stream().collect(Collectors.summingInt(CoronaStats::getRecoveries)));
-		coronaSummaryStats.setMortalityRate(
-				f.format(100.0 * coronaSummaryStats.getTotalDeaths() / coronaSummaryStats.getTotalCases()) + " %");
+		coronaSummaryStats.setMortalityRate(CoronaTrackerUtil.f
+				.format(100.0 * coronaSummaryStats.getTotalDeaths() / coronaSummaryStats.getTotalCases()) + "%");
+		coronaSummaryStats.setRecoveryRate(CoronaTrackerUtil.f
+				.format(100.0 * coronaSummaryStats.getTotalRecoveries() / coronaSummaryStats.getTotalCases()) + "%");
+		coronaSummaryStats.setCountriesWithFirstCase(coronaStats.stream().filter(stat -> stat.isFirstCaseReported())
+				.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getCountry()))
+				.map(stat -> stat.getCountry()).collect(Collectors.toList()));
+		coronaSummaryStats.setCountriesWithFirstDeath(coronaStats.stream().filter(stat -> stat.isFirstDeathReported())
+				.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getCountry()))
+				.map(stat -> stat.getCountry()).collect(Collectors.toList()));
 
 		CoronaStatsResponse coronaStatsResponse = new CoronaStatsResponse();
 		coronaStatsResponse.setCoronaStats(coronaStats.stream()
