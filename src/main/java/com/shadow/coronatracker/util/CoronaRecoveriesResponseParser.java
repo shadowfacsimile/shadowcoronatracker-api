@@ -19,14 +19,14 @@ public class CoronaRecoveriesResponseParser implements ResponseParser {
 		List<CoronaRecoveriesStats> coronaRecoveriesStats = new ArrayList<>();
 
 		for (CSVRecord record : CoronaTrackerUtil.convertResponseToCSVRecord(response)) {
+			int lastRecord = StringUtils.isBlank(record.get(record.size() - 1)) ? record.size() - 2 : record.size() - 1;
+
 			CoronaRecoveriesStats recoveriesStats = new CoronaRecoveriesStats();
 			recoveriesStats.setState(record.get(0));
 			recoveriesStats.setCountry(record.get(1));
 			recoveriesStats.setLatitude(Float.valueOf(record.get(2)));
 			recoveriesStats.setLongitude(Float.valueOf(record.get(3)));
-			String recoveries = StringUtils.isBlank(record.get(record.size() - 1)) ? "0"
-					: record.get(record.size() - 1);
-			recoveriesStats.setRecoveries(Integer.valueOf(recoveries));
+			recoveriesStats.setRecoveries(Integer.valueOf(record.get(lastRecord)));
 			coronaRecoveriesStats.add(recoveriesStats);
 		}
 

@@ -66,4 +66,11 @@ public class CoronaCasesStats {
 		this.firstCaseReported = firstCaseReported;
 	}
 
+	@Override
+	public String toString() {
+		return "CoronaCasesStats [state=" + state + ", country=" + country + ", latitude=" + latitude + ", longitude="
+				+ longitude + ", cases=" + cases + ", casesSinceYesterday=" + casesSinceYesterday
+				+ ", firstCaseReported=" + firstCaseReported + "]";
+	}
+
 }
