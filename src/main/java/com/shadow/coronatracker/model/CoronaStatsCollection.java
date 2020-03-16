@@ -1,13 +1,17 @@
 package com.shadow.coronatracker.model;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CoronaStatsCollection {
 
 	private List<CoronaCasesStats> coronaCasesStats = new ArrayList<>();
 	private List<CoronaDeathsStats> coronaDeathsStats = new ArrayList<>();
 	private List<CoronaRecoveriesStats> coronaRecoveriesStats = new ArrayList<>();
+	private Map<Date, Double> coronaCasesGrowthFactors = new LinkedHashMap<>();
 
 	public List<CoronaCasesStats> getCoronaCasesStats() {
 		return coronaCasesStats;
@@ -31,6 +35,14 @@ public class CoronaStatsCollection {
 
 	public void setCoronaRecoveriesStats(List<CoronaRecoveriesStats> coronaRecoveriesStats) {
 		this.coronaRecoveriesStats = coronaRecoveriesStats;
+	}
+
+	public Map<Date, Double> getCoronaCasesGrowthFactors() {
+		return coronaCasesGrowthFactors;
+	}
+
+	public void setCoronaCasesGrowthFactors(Map<Date, Double> coronaCasesGrowthFactors) {
+		this.coronaCasesGrowthFactors = coronaCasesGrowthFactors;
 	}
 
 }

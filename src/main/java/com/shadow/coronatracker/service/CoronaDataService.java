@@ -7,6 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,12 +16,13 @@ import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.shadow.coronatracker.model.CoronaCaseGrowthStats;
 import com.shadow.coronatracker.model.CoronaCasesStats;
+import com.shadow.coronatracker.model.CoronaData;
+import com.shadow.coronatracker.model.CoronaDataResponse;
 import com.shadow.coronatracker.model.CoronaDeathsStats;
 import com.shadow.coronatracker.model.CoronaRecoveriesStats;
-import com.shadow.coronatracker.model.CoronaData;
 import com.shadow.coronatracker.model.CoronaStatsCollection;
-import com.shadow.coronatracker.model.CoronaDataResponse;
 import com.shadow.coronatracker.model.CoronaSummaryStats;
 import com.shadow.coronatracker.model.Statistics;
 import com.shadow.coronatracker.util.CoronaTrackerUtil;
@@ -32,22 +34,39 @@ public class CoronaDataService {
 
 	public CoronaDataResponse fetchCoronaData() throws IOException, InterruptedException {
 
+		CoronaStatsCollection coronaStatsCollection = fetchCoronaStatsCollection();
+
+		CoronaDataResponse coronaDataResponse = createCoronaDataResponse(
+				createCoronaDataListFromStatsCollection(coronaStatsCollection));
+
+		coronaDataResponse.setCoronaCaseGrowthStats(createCoronaCaseGrowthDataResponse(coronaStatsCollection));
+
+		return coronaDataResponse;
+	}
+
+	private CoronaStatsCollection fetchCoronaStatsCollection() throws IOException, InterruptedException {
+
 		HttpClient httpClient = HttpClient.newHttpClient();
 
 		CoronaStatsCollection coronaStatsCollection = new CoronaStatsCollection();
 
 		for (Statistics statistics : Statistics.values()) {
+			LOGGER.info("Statistics: " + statistics);
+
 			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(statistics.getUrl())).build();
 			LOGGER.info("Connecting to: " + statistics.getUrl());
+
 			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 			LOGGER.info("Response code " + response.statusCode());
+
 			statistics.getParser().parse(response, coronaStatsCollection);
 		}
 
-		return createCoronaDataResponse(createCoronaDataListFromStatsCollection(coronaStatsCollection));
+		return coronaStatsCollection;
 	}
 
-	private List<CoronaData> createCoronaDataListFromStatsCollection(final CoronaStatsCollection coronaStatsCollection) {
+	private List<CoronaData> createCoronaDataListFromStatsCollection(
+			final CoronaStatsCollection coronaStatsCollection) {
 
 		Map<String, Integer> casesByCountry = coronaStatsCollection.getCoronaCasesStats().stream().collect(
 				Collectors.groupingBy(CoronaCasesStats::getCountry, Collectors.summingInt(CoronaCasesStats::getCases)));
@@ -106,12 +125,13 @@ public class CoronaDataService {
 	}
 
 	private CoronaSummaryStats createCoronaSummaryStats(final List<CoronaData> coronaDataList) {
-		
+
 		CoronaSummaryStats coronaSummaryStats = new CoronaSummaryStats();
 		coronaSummaryStats.setTotalCases(coronaDataList.stream().collect(Collectors.summingInt(CoronaData::getCases)));
 		coronaSummaryStats.setTotalCasesSinceYesterday(
 				coronaDataList.stream().collect(Collectors.summingInt(CoronaData::getCasesSinceYesterday)));
-		coronaSummaryStats.setTotalDeaths(coronaDataList.stream().collect(Collectors.summingInt(CoronaData::getDeaths)));
+		coronaSummaryStats
+				.setTotalDeaths(coronaDataList.stream().collect(Collectors.summingInt(CoronaData::getDeaths)));
 		coronaSummaryStats.setTotalDeathsSinceYesterday(
 				coronaDataList.stream().collect(Collectors.summingInt(CoronaData::getDeathsSinceYesterday)));
 		coronaSummaryStats
@@ -123,11 +143,28 @@ public class CoronaDataService {
 		coronaSummaryStats.setCountriesWithFirstCase(coronaDataList.stream().filter(stat -> stat.isFirstCaseReported())
 				.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getCountry()))
 				.map(stat -> stat.getCountry()).collect(Collectors.toList()));
-		coronaSummaryStats.setCountriesWithFirstDeath(coronaDataList.stream().filter(stat -> stat.isFirstDeathReported())
-				.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getCountry()))
-				.map(stat -> stat.getCountry()).collect(Collectors.toList()));
-		
+		coronaSummaryStats
+				.setCountriesWithFirstDeath(coronaDataList.stream().filter(stat -> stat.isFirstDeathReported())
+						.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getCountry()))
+						.map(stat -> stat.getCountry()).collect(Collectors.toList()));
+
 		return coronaSummaryStats;
+	}
+
+	private List<CoronaCaseGrowthStats> createCoronaCaseGrowthDataResponse(
+			final CoronaStatsCollection fetchCoronaStatsCollection) {
+
+		List<CoronaCaseGrowthStats> caseGrowthStatsList = new ArrayList<>();
+
+		for (Entry<Date, Double> caseGrowth : fetchCoronaStatsCollection.getCoronaCasesGrowthFactors().entrySet()) {
+			CoronaCaseGrowthStats caseGrowthStats = new CoronaCaseGrowthStats();
+			caseGrowthStats.setDate(caseGrowth.getKey());
+			caseGrowthStats.setGrowthFactor(caseGrowth.getValue());
+			caseGrowthStatsList.add(caseGrowthStats);
+		}
+
+		return caseGrowthStatsList.stream().sorted(Comparator.comparing(CoronaCaseGrowthStats::getDate).reversed())
+				.collect(Collectors.toList());
 	}
 
 }

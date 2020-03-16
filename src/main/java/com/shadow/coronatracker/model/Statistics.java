@@ -2,6 +2,7 @@ package com.shadow.coronatracker.model;
 
 import com.shadow.coronatracker.util.CoronaCasesResponseParser;
 import com.shadow.coronatracker.util.CoronaDeathsResponseParser;
+import com.shadow.coronatracker.util.CoronaGrowthResponseParser;
 import com.shadow.coronatracker.util.CoronaRecoveriesResponseParser;
 import com.shadow.coronatracker.util.ResponseParser;
 
@@ -13,7 +14,9 @@ public enum Statistics {
 			new CoronaDeathsResponseParser()),
 	RECOVERIES(
 			"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv",
-			new CoronaRecoveriesResponseParser());
+			new CoronaRecoveriesResponseParser()),
+	GROWTH("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv",
+			new CoronaGrowthResponseParser());	
 
 	private final String url;
 	private final ResponseParser parser;
