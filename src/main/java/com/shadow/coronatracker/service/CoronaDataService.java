@@ -163,7 +163,7 @@ public class CoronaDataService {
 			caseGrowthStatsList.add(caseGrowthStats);
 		}
 
-		return caseGrowthStatsList.stream().sorted(Comparator.comparing(CoronaCaseGrowthStats::getDate).reversed())
+		return caseGrowthStatsList.stream().sorted(Comparator.comparing(CoronaCaseGrowthStats::getDate))
 				.collect(Collectors.toList());
 	}
 
