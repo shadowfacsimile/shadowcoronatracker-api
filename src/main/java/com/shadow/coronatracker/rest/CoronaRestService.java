@@ -19,7 +19,7 @@ public class CoronaRestService {
 	private CoronaDataService coronaDataService;
 
 	@GetMapping("/stats")
-	@CrossOrigin(origins = { "http://shadowcoronatracker.eu-gb.mybluemix.net/", "http://localhost:4200/" })
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	public CoronaDataResponse getCoronaCasesStats() throws IOException, InterruptedException {
 		return coronaDataService.fetchCoronaData();
 	}
