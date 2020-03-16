@@ -12,7 +12,7 @@ import org.apache.commons.csv.CSVRecord;
 public class CoronaTrackerUtil {
 
 	public static final List<String> filterCountries = Arrays.asList("Australia", "Hong Kong SAR",
-			"Iran (Islamic Republic of)", "Republic of Korea", "Mainland China", "US");
+			"Iran (Islamic Republic of)", "Republic of Korea", "Mainland China", "US", "France", "Canada");
 
 	public static Iterable<CSVRecord> convertResponseToCSVRecord(final HttpResponse<String> response)
 			throws IOException {

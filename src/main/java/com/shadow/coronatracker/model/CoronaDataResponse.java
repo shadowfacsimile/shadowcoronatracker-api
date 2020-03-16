@@ -2,16 +2,16 @@ package com.shadow.coronatracker.model;
 
 import java.util.List;
 
-public class CoronaStatsResponse {
+public class CoronaDataResponse {
 
-	private List<CoronaStats> coronaStats;
+	private List<CoronaData> coronaStats;
 	private CoronaSummaryStats coronaSummaryStats;
 
-	public List<CoronaStats> getCoronaStats() {
+	public List<CoronaData> getCoronaStats() {
 		return coronaStats;
 	}
 
-	public void setCoronaStats(List<CoronaStats> coronaStats) {
+	public void setCoronaStats(List<CoronaData> coronaStats) {
 		this.coronaStats = coronaStats;
 	}
 

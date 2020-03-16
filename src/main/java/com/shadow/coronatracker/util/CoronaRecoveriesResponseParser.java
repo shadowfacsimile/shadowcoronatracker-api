@@ -14,7 +14,7 @@ import com.shadow.coronatracker.model.CoronaStatsCollection;
 public class CoronaRecoveriesResponseParser implements ResponseParser {
 
 	@Override
-	public void parse(HttpResponse<String> response, CoronaStatsCollection coronaSummaryStats) throws IOException {
+	public void parse(HttpResponse<String> response, CoronaStatsCollection coronaStatsCollection) throws IOException {
 
 		List<CoronaRecoveriesStats> coronaRecoveriesStats = new ArrayList<>();
 
@@ -30,7 +30,7 @@ public class CoronaRecoveriesResponseParser implements ResponseParser {
 			coronaRecoveriesStats.add(recoveriesStats);
 		}
 
-		coronaSummaryStats.setCoronaRecoveriesStats(coronaRecoveriesStats);
+		coronaStatsCollection.setCoronaRecoveriesStats(coronaRecoveriesStats);
 
 	}
 }

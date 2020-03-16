@@ -14,13 +14,13 @@ import com.shadow.coronatracker.model.CoronaStatsCollection;
 public class CoronaDeathsResponseParser implements ResponseParser {
 
 	@Override
-	public void parse(HttpResponse<String> response, CoronaStatsCollection coronaSummaryStats) throws IOException {
+	public void parse(HttpResponse<String> response, CoronaStatsCollection coronaStatsCollection) throws IOException {
 
 		List<CoronaDeathsStats> coronaDeathsStats = new ArrayList<>();
 
 		for (CSVRecord record : CoronaTrackerUtil.convertResponseToCSVRecord(response)) {
 			int lastRecord = StringUtils.isBlank(record.get(record.size() - 1)) ? record.size() - 2 : record.size() - 1;
-			
+
 			CoronaDeathsStats deathsStats = new CoronaDeathsStats();
 			deathsStats.setState(record.get(0));
 			deathsStats.setCountry(record.get(1));
@@ -28,12 +28,12 @@ public class CoronaDeathsResponseParser implements ResponseParser {
 			deathsStats.setLongitude(Float.valueOf(record.get(3)));
 			deathsStats.setDeaths(Integer.valueOf(record.get(lastRecord)));
 			deathsStats.setDeathsSinceYesterday(deathsStats.getDeaths() - Integer.valueOf(record.get(lastRecord - 1)));
-			deathsStats.setFirstDeathReported(record.get(lastRecord - 1).equalsIgnoreCase("0")
-					&& StringUtils.isNotBlank(record.get(lastRecord)) && !record.get(lastRecord).equalsIgnoreCase("0"));
+			deathsStats.setFirstDeathReported(
+					record.get(lastRecord - 1).equalsIgnoreCase("0") && !record.get(lastRecord).equalsIgnoreCase("0"));
 			coronaDeathsStats.add(deathsStats);
 		}
 
-		coronaSummaryStats.setCoronaDeathsStats(coronaDeathsStats);
+		coronaStatsCollection.setCoronaDeathsStats(coronaDeathsStats);
 	}
 
 }

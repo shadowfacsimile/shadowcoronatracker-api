@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shadow.coronatracker.model.CoronaStatsResponse;
+import com.shadow.coronatracker.model.CoronaDataResponse;
 import com.shadow.coronatracker.service.CoronaDataService;
 
 @RestController
@@ -18,9 +18,9 @@ public class CoronaRestService {
 	@Autowired
 	private CoronaDataService coronaDataService;
 
-	@GetMapping("/fetchstats")
-	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	public CoronaStatsResponse getCoronaCasesStats() throws IOException, InterruptedException {
+	@GetMapping("/stats")
+	@CrossOrigin(origins = { "http://shadowcoronatracker.eu-gb.mybluemix.net/", "http://localhost:4200/" })
+	public CoronaDataResponse getCoronaCasesStats() throws IOException, InterruptedException {
 		return coronaDataService.fetchCoronaData();
 	}
 

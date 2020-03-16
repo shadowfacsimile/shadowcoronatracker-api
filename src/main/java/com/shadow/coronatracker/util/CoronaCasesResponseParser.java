@@ -14,7 +14,7 @@ import com.shadow.coronatracker.model.CoronaStatsCollection;
 public class CoronaCasesResponseParser implements ResponseParser {
 
 	@Override
-	public void parse(HttpResponse<String> response, CoronaStatsCollection coronaSummaryStats) throws IOException {
+	public void parse(HttpResponse<String> response, CoronaStatsCollection coronaStatsCollection) throws IOException {
 
 		List<CoronaCasesStats> coronaCasesStats = new ArrayList<>();
 
@@ -28,12 +28,12 @@ public class CoronaCasesResponseParser implements ResponseParser {
 			casesStats.setLongitude(Float.valueOf(record.get(3)));
 			casesStats.setCases(Integer.valueOf(record.get(lastRecord)));
 			casesStats.setCasesSinceYesterday(casesStats.getCases() - Integer.valueOf(record.get(lastRecord - 1)));
-			casesStats.setFirstCaseReported(record.get(lastRecord - 1).equalsIgnoreCase("0")
-					&& StringUtils.isNotBlank(record.get(lastRecord)) && !record.get(lastRecord).equalsIgnoreCase("0"));
+			casesStats.setFirstCaseReported(
+					record.get(lastRecord - 1).equalsIgnoreCase("0") && !record.get(lastRecord).equalsIgnoreCase("0"));
 			coronaCasesStats.add(casesStats);
 		}
 
-		coronaSummaryStats.setCoronaCasesStats(coronaCasesStats);
+		coronaStatsCollection.setCoronaCasesStats(coronaCasesStats);
 	}
 
 }
