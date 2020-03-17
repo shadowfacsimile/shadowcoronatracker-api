@@ -12,7 +12,8 @@ import org.apache.commons.csv.CSVRecord;
 public class CoronaTrackerUtil {
 
 	public static final List<String> filterCountries = Arrays.asList("Australia", "Hong Kong SAR",
-			"Iran (Islamic Republic of)", "Republic of Korea", "Mainland China", "US", "France", "Canada");
+			"Iran (Islamic Republic of)", "Republic of Korea", "Mainland China", "US", "France", "Canada", "UK",
+			"United States", "United Kingdom");
 
 	public static Iterable<CSVRecord> convertResponseToCSVRecord(final HttpResponse<String> response)
 			throws IOException {
