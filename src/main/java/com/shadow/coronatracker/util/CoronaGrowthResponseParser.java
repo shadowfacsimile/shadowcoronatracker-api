@@ -28,7 +28,7 @@ public class CoronaGrowthResponseParser implements ResponseParser {
 
 		for (CSVRecord csvrecord : CoronaTrackerUtil.convertResponseToCSVRecord(response)) {
 			for (int i = 5; i <= lastRecord; i++) {
-				int fetchFrom = lastRecord - i + 1;
+				int fetchFrom = lastRecord - i;
 				Date date = fetchDate(fetchFrom);
 				int cases = casesByDateMap.get(date) == null ? 0
 						: casesByDateMap.get(date) + Integer.valueOf(csvrecord.get(i));
@@ -36,22 +36,27 @@ public class CoronaGrowthResponseParser implements ResponseParser {
 			}
 		}
 
-		for (int i = 6; i <= lastRecord; i++) {
-			int fetchFrom = lastRecord - i + 1;
+		for (int i = 7; i <= lastRecord; i++) {
+			int fetchFrom = lastRecord - i;
 			Date date = fetchDate(fetchFrom);
-			fetchFrom = lastRecord - i + 2;
+			fetchFrom = lastRecord - i + 1;
 			Date prevDate = fetchDate(fetchFrom);
-			growthFactorMap.put(date, (double) casesByDateMap.get(date) / casesByDateMap.get(prevDate));
+			fetchFrom = lastRecord - i + 2;
+			Date prevToPrevDate = fetchDate(fetchFrom);
+			int demo = casesByDateMap.get(prevDate) - casesByDateMap.get(prevToPrevDate) == 0 ? 1
+					: casesByDateMap.get(prevDate) - casesByDateMap.get(prevToPrevDate);
+			growthFactorMap.put(date, (double) (casesByDateMap.get(date) - casesByDateMap.get(prevDate)) / demo);
 		}
 
 		coronaStatsCollection.setCoronaCasesGrowthFactors(growthFactorMap);
+		coronaStatsCollection.setCoronaCasesGrowth(casesByDateMap);
 	}
 
 	private Date fetchDate(final int fetchFrom) {
-		
+
 		LocalDate localDate = LocalDate.now().minusDays(fetchFrom);
 		Date date = Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-		
+
 		return date;
 	}
 

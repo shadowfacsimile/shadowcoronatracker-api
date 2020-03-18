@@ -2,8 +2,8 @@ package com.shadow.coronatracker.model;
 
 import java.util.Date;
 
-public class CoronaCaseGrowthStats {
-
+public class CoronaCaseGrowthFactorStats {
+	
 	private Date date;
 	private double growthFactor;
 
@@ -22,5 +22,4 @@ public class CoronaCaseGrowthStats {
 	public void setGrowthFactor(double growthFactor) {
 		this.growthFactor = growthFactor;
 	}
-
 }

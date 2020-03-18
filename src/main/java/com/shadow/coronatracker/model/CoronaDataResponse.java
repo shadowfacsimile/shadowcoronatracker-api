@@ -7,6 +7,7 @@ public class CoronaDataResponse {
 	private List<CoronaData> coronaStats;
 	private CoronaSummaryStats coronaSummaryStats;
 	private List<CoronaCaseGrowthStats> coronaCaseGrowthStats;
+	private List<CoronaCaseGrowthFactorStats> coronaCaseGrowthFactorStats;
 
 	public List<CoronaData> getCoronaStats() {
 		return coronaStats;
@@ -30,6 +31,14 @@ public class CoronaDataResponse {
 
 	public void setCoronaCaseGrowthStats(List<CoronaCaseGrowthStats> coronaCaseGrowthStats) {
 		this.coronaCaseGrowthStats = coronaCaseGrowthStats;
+	}
+
+	public List<CoronaCaseGrowthFactorStats> getCoronaCaseGrowthFactorStats() {
+		return coronaCaseGrowthFactorStats;
+	}
+
+	public void setCoronaCaseGrowthFactorStats(List<CoronaCaseGrowthFactorStats> coronaCaseGrowthFactorStats) {
+		this.coronaCaseGrowthFactorStats = coronaCaseGrowthFactorStats;
 	}
 
 }

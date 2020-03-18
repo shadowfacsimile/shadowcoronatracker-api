@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.shadow.coronatracker.model.CoronaCaseGrowthFactorStats;
 import com.shadow.coronatracker.model.CoronaCaseGrowthStats;
 import com.shadow.coronatracker.model.CoronaCasesStats;
 import com.shadow.coronatracker.model.CoronaData;
@@ -39,6 +40,7 @@ public class CoronaDataService {
 		CoronaDataResponse coronaDataResponse = createCoronaDataResponse(
 				createCoronaDataListFromStatsCollection(coronaStatsCollection));
 
+		coronaDataResponse.setCoronaCaseGrowthFactorStats(createCoronaCaseGrowthFactorDataResponse(coronaStatsCollection));
 		coronaDataResponse.setCoronaCaseGrowthStats(createCoronaCaseGrowthDataResponse(coronaStatsCollection));
 
 		return coronaDataResponse;
@@ -151,20 +153,35 @@ public class CoronaDataService {
 		return coronaSummaryStats;
 	}
 
+	private List<CoronaCaseGrowthFactorStats> createCoronaCaseGrowthFactorDataResponse(
+			final CoronaStatsCollection fetchCoronaStatsCollection) {
+
+		List<CoronaCaseGrowthFactorStats> caseGrowthStatsList = new ArrayList<>();
+
+		for (Entry<Date, Double> caseGrowth : fetchCoronaStatsCollection.getCoronaCasesGrowthFactors().entrySet()) {
+			CoronaCaseGrowthFactorStats caseGrowthStats = new CoronaCaseGrowthFactorStats();
+			caseGrowthStats.setDate(caseGrowth.getKey());
+			caseGrowthStats.setGrowthFactor(caseGrowth.getValue());
+			caseGrowthStatsList.add(caseGrowthStats);
+		}
+
+		return caseGrowthStatsList.stream().sorted(Comparator.comparing(CoronaCaseGrowthFactorStats::getDate))
+				.collect(Collectors.toList());
+	}
+
 	private List<CoronaCaseGrowthStats> createCoronaCaseGrowthDataResponse(
 			final CoronaStatsCollection fetchCoronaStatsCollection) {
 
 		List<CoronaCaseGrowthStats> caseGrowthStatsList = new ArrayList<>();
 
-		for (Entry<Date, Double> caseGrowth : fetchCoronaStatsCollection.getCoronaCasesGrowthFactors().entrySet()) {
+		for (Entry<Date, Integer> caseGrowth : fetchCoronaStatsCollection.getCoronaCasesGrowth().entrySet()) {
 			CoronaCaseGrowthStats caseGrowthStats = new CoronaCaseGrowthStats();
 			caseGrowthStats.setDate(caseGrowth.getKey());
-			caseGrowthStats.setGrowthFactor(caseGrowth.getValue());
+			caseGrowthStats.setGrowth(caseGrowth.getValue());
 			caseGrowthStatsList.add(caseGrowthStats);
 		}
 
 		return caseGrowthStatsList.stream().sorted(Comparator.comparing(CoronaCaseGrowthStats::getDate))
 				.collect(Collectors.toList());
 	}
-
 }
