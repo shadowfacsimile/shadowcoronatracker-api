@@ -27,7 +27,7 @@ public class CoronaGrowthResponseParser implements ResponseParser {
 		int lastRecord = StringUtils.isBlank(record.get(record.size() - 1)) ? record.size() - 2 : record.size() - 1;
 
 		for (CSVRecord csvrecord : CoronaTrackerUtil.convertResponseToCSVRecord(response)) {
-			for (int i = 5; i <= lastRecord; i++) {
+			for (int i = 4; i <= lastRecord; i++) {
 				int fetchFrom = lastRecord - i;
 				Date date = fetchDate(fetchFrom);
 				int cases = casesByDateMap.get(date) == null ? 0
@@ -36,7 +36,7 @@ public class CoronaGrowthResponseParser implements ResponseParser {
 			}
 		}
 
-		for (int i = 7; i <= lastRecord; i++) {
+		for (int i = 6; i <= lastRecord; i++) {
 			int fetchFrom = lastRecord - i;
 			Date date = fetchDate(fetchFrom);
 			fetchFrom = lastRecord - i + 1;
