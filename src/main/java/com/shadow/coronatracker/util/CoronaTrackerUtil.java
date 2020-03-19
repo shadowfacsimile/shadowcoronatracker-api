@@ -5,6 +5,8 @@ import java.io.StringReader;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -15,11 +17,14 @@ public class CoronaTrackerUtil {
 			"Iran (Islamic Republic of)", "Republic of Korea", "Mainland China", "US", "France", "Canada", "UK",
 			"United States", "United Kingdom");
 
-	public static Iterable<CSVRecord> convertResponseToCSVRecord(final HttpResponse<String> response)
-			throws IOException {
+	public static List<CSVRecord> convertResponseToCSVRecord(final HttpResponse<String> response) throws IOException {
 		StringReader reader = new StringReader(response.body());
 		Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
-		return records;
+
+		// Create a List from the Iterable
+		List<CSVRecord> csvRecords = StreamSupport.stream(records.spliterator(), false).collect(Collectors.toList());
+
+		return csvRecords;
 	}
 
 }

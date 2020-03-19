@@ -1,7 +1,6 @@
 package com.shadow.coronatracker.util;
 
 import java.io.IOException;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,15 +9,16 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.shadow.coronatracker.model.CoronaDeathsStats;
 import com.shadow.coronatracker.model.CoronaStatsCollection;
+import com.shadow.coronatracker.model.Statistics;
 
 public class CoronaDeathsResponseParser implements ResponseParser {
 
 	@Override
-	public void parse(HttpResponse<String> response, CoronaStatsCollection coronaStatsCollection) throws IOException {
+	public void parse(Statistics statistics, List<CSVRecord> csvRecords, CoronaStatsCollection coronaStatsCollection) throws IOException {
 
 		List<CoronaDeathsStats> coronaDeathsStats = new ArrayList<>();
 
-		for (CSVRecord record : CoronaTrackerUtil.convertResponseToCSVRecord(response)) {
+		for (CSVRecord record : csvRecords) {
 			int lastRecord = StringUtils.isBlank(record.get(record.size() - 1)) ? record.size() - 2 : record.size() - 1;
 
 			CoronaDeathsStats deathsStats = new CoronaDeathsStats();

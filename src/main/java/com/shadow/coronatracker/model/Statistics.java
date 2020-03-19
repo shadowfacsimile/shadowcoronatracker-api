@@ -16,7 +16,10 @@ public enum Statistics {
 			"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv",
 			new CoronaRecoveriesResponseParser()),
 	GROWTH("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv",
-			new CoronaGrowthResponseParser());	
+			new CoronaGrowthResponseParser()),
+	GROWTH_COUNTRY(
+			"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv",
+			new CoronaGrowthResponseParser());
 
 	private final String url;
 	private final ResponseParser parser;

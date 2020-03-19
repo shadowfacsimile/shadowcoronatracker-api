@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.shadow.coronatracker.model.CoronaCaseGrowthCountryStats;
 import com.shadow.coronatracker.model.CoronaCaseGrowthFactorStats;
 import com.shadow.coronatracker.model.CoronaCaseGrowthStats;
 import com.shadow.coronatracker.model.CoronaCasesStats;
@@ -40,8 +41,11 @@ public class CoronaDataService {
 		CoronaDataResponse coronaDataResponse = createCoronaDataResponse(
 				createCoronaDataListFromStatsCollection(coronaStatsCollection));
 
-		coronaDataResponse.setCoronaCaseGrowthFactorStats(createCoronaCaseGrowthFactorDataResponse(coronaStatsCollection));
+		coronaDataResponse
+				.setCoronaCaseGrowthFactorStats(createCoronaCaseGrowthFactorDataResponse(coronaStatsCollection));
 		coronaDataResponse.setCoronaCaseGrowthStats(createCoronaCaseGrowthDataResponse(coronaStatsCollection));
+		coronaDataResponse
+				.setCoronaCaseGrowthCountryStats(createCoronaCaseGrowthCountryDataResponse(coronaStatsCollection));
 
 		return coronaDataResponse;
 	}
@@ -61,7 +65,8 @@ public class CoronaDataService {
 			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 			LOGGER.info("Response code " + response.statusCode());
 
-			statistics.getParser().parse(response, coronaStatsCollection);
+			statistics.getParser().parse(statistics, CoronaTrackerUtil.convertResponseToCSVRecord(response),
+					coronaStatsCollection);
 		}
 
 		return coronaStatsCollection;
@@ -102,10 +107,10 @@ public class CoronaDataService {
 			stats.setCases(entry.getValue());
 			stats.setCasesSinceYesterday(casesDeltaByCountry.get(entry.getKey()));
 			stats.setDeaths(deathsByCountry.get(entry.getKey()));
-			stats.setMortalityRate((double) stats.getDeaths() / stats.getCases());
+			stats.setMortalityRate(stats.getCases() == 0 ? 0 : (double) stats.getDeaths() / stats.getCases());
 			stats.setDeathsSinceYesterday(deathsDeltaByCountry.get(entry.getKey()));
 			stats.setRecoveries(recoveriesByCountry.get(entry.getKey()));
-			stats.setRecoveryRate((double) stats.getRecoveries() / stats.getCases());
+			stats.setRecoveryRate(stats.getCases() == 0 ? 0 : (double) stats.getRecoveries() / stats.getCases());
 			stats.setFirstCaseReported(firstCaseCountries.stream()
 					.filter(stat -> stat.getCountry().equalsIgnoreCase(entry.getKey())).count() > 0 ? true : false);
 			stats.setFirstDeathReported(firstDeathCountries.stream()
@@ -182,6 +187,22 @@ public class CoronaDataService {
 		}
 
 		return caseGrowthStatsList.stream().sorted(Comparator.comparing(CoronaCaseGrowthStats::getDate))
+				.collect(Collectors.toList());
+	}
+
+	private List<CoronaCaseGrowthCountryStats> createCoronaCaseGrowthCountryDataResponse(
+			final CoronaStatsCollection fetchCoronaStatsCollection) {
+
+		List<CoronaCaseGrowthCountryStats> caseGrowthStatsList = new ArrayList<>();
+
+		for (Entry<Date, Integer> caseGrowth : fetchCoronaStatsCollection.getCoronaCasesGrowthCountry().entrySet()) {
+			CoronaCaseGrowthCountryStats caseGrowthStats = new CoronaCaseGrowthCountryStats();
+			caseGrowthStats.setDate(caseGrowth.getKey());
+			caseGrowthStats.setGrowth(caseGrowth.getValue());
+			caseGrowthStatsList.add(caseGrowthStats);
+		}
+
+		return caseGrowthStatsList.stream().sorted(Comparator.comparing(CoronaCaseGrowthCountryStats::getDate))
 				.collect(Collectors.toList());
 	}
 }
