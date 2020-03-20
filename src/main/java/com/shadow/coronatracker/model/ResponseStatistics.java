@@ -9,8 +9,7 @@ import com.shadow.coronatracker.util.CoronaDataCreator;
 
 public enum ResponseStatistics {
 
-	SUMMARY(new CoronaCasesSummaryDataCreator()),
-	CASES(new CoronaCasesDataCreator()), 
+	CASES(new CoronaCasesDataCreator()), SUMMARY(new CoronaCasesSummaryDataCreator()),
 	GROWTH(new CoronaCasesGrowthDataCreator()), GROWTH_FACTOR(new CoronaCasesGrowthFactorDataCreator()),
 	GROWTH_COUNTRY(new CoronaCasesGrowthCountryDataCreator());
 
