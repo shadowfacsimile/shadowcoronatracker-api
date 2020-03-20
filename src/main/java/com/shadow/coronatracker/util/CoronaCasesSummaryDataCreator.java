@@ -12,6 +12,7 @@ public class CoronaCasesSummaryDataCreator implements CoronaDataCreator {
 
 	@Override
 	public void create(CoronaStatsCollection coronaStatsCollection, CoronaDataResponse coronaDataResponse) {
+
 		List<CoronaData> coronaDataList = coronaStatsCollection.getCoronaDataList();
 
 		CoronaSummaryStats coronaSummaryStats = new CoronaSummaryStats();
@@ -38,7 +39,6 @@ public class CoronaCasesSummaryDataCreator implements CoronaDataCreator {
 						.map(stat -> stat.getCountry()).collect(Collectors.toList()));
 
 		coronaDataResponse.setCoronaSummaryStats(coronaSummaryStats);
-
 	}
 
 }

@@ -28,11 +28,7 @@ public class CoronaDataService {
 
 	public CoronaDataResponse fetchCoronaData() throws IOException, InterruptedException {
 
-		CoronaStatsCollection coronaStatsCollection = createCoronaStatsCollectionByFetchingData();
-		createCoronaDataListFromStatsCollection(coronaStatsCollection);
-		CoronaDataResponse coronaDataResponse = createCoronaDataResponse(coronaStatsCollection);
-
-		return coronaDataResponse;
+		return createCoronaDataResponse(createCoronaStatsCollectionByFetchingData());
 	}
 
 	private CoronaStatsCollection createCoronaStatsCollectionByFetchingData() throws IOException, InterruptedException {
@@ -48,7 +44,19 @@ public class CoronaDataService {
 					coronaStatsCollection);
 		}
 
+		createCoronaDataListFromStatsCollection(coronaStatsCollection);
+
 		return coronaStatsCollection;
+	}
+
+	private CoronaDataResponse createCoronaDataResponse(final CoronaStatsCollection coronaStatsCollection) {
+
+		CoronaDataResponse coronaDataResponse = new CoronaDataResponse();
+
+		for (ResponseStatistics stats : ResponseStatistics.values())
+			stats.getCoronaGrowthDataCreator().create(coronaStatsCollection, coronaDataResponse);
+
+		return coronaDataResponse;
 	}
 
 	private void createCoronaDataListFromStatsCollection(final CoronaStatsCollection coronaStatsCollection) {
@@ -97,16 +105,6 @@ public class CoronaDataService {
 		}
 
 		coronaStatsCollection.setCoronaDataList(coronaDataList);
-	}
-
-	private CoronaDataResponse createCoronaDataResponse(final CoronaStatsCollection coronaStatsCollection) {
-
-		CoronaDataResponse coronaDataResponse = new CoronaDataResponse();
-
-		for (ResponseStatistics stats : ResponseStatistics.values())
-			stats.getCoronaGrowthDataCreator().create(coronaStatsCollection, coronaDataResponse);
-
-		return coronaDataResponse;
 	}
 
 }
