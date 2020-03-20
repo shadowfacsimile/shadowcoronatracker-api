@@ -20,8 +20,6 @@ public class CoronaTrackerUtil {
 	public static List<CSVRecord> convertResponseToCSVRecord(final HttpResponse<String> response) throws IOException {
 		StringReader reader = new StringReader(response.body());
 		Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
-
-		// Create a List from the Iterable
 		List<CSVRecord> csvRecords = StreamSupport.stream(records.spliterator(), false).collect(Collectors.toList());
 
 		return csvRecords;
