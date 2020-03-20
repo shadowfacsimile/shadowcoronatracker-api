@@ -195,14 +195,15 @@ public class CoronaDataService {
 
 		List<CoronaCaseGrowthCountryStats> caseGrowthStatsList = new ArrayList<>();
 
-		for (Entry<Date, Integer> caseGrowth : fetchCoronaStatsCollection.getCoronaCasesGrowthCountry().entrySet()) {
+		for (Entry<String, List<CoronaCaseGrowthStats>> caseGrowth : fetchCoronaStatsCollection
+				.getCoronaCasesGrowthCountry().entrySet()) {
 			CoronaCaseGrowthCountryStats caseGrowthStats = new CoronaCaseGrowthCountryStats();
-			caseGrowthStats.setDate(caseGrowth.getKey());
-			caseGrowthStats.setGrowth(caseGrowth.getValue());
+			caseGrowthStats.setCountry(caseGrowth.getKey());
+			caseGrowthStats.setGrowthStats(caseGrowth.getValue());
 			caseGrowthStatsList.add(caseGrowthStats);
 		}
 
-		return caseGrowthStatsList.stream().sorted(Comparator.comparing(CoronaCaseGrowthCountryStats::getDate))
+		return caseGrowthStatsList.stream().sorted(Comparator.comparing(CoronaCaseGrowthCountryStats::getCountry))
 				.collect(Collectors.toList());
 	}
 }

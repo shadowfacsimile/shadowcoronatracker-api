@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 
+import com.shadow.coronatracker.model.CoronaCaseGrowthStats;
 import com.shadow.coronatracker.model.CoronaStatsCollection;
 import com.shadow.coronatracker.model.Statistics;
 
@@ -25,15 +27,15 @@ public class CoronaGrowthResponseParser implements ResponseParser {
 
 		Map<Date, Integer> casesByDateMap = new LinkedHashMap<>();
 
+		Map<String, List<CoronaCaseGrowthStats>> growthByCountryMap = new LinkedHashMap<>();
+
 		CSVRecord record = csvRecords.get(0);
 
 		int lastRecord = StringUtils.isBlank(record.get(record.size() - 1)) ? record.size() - 2 : record.size() - 1;
 
 		if (statistics.equals(Statistics.GROWTH_COUNTRY)) {
-			List<CSVRecord> records = csvRecords.stream().filter(rec -> rec.get(1).equalsIgnoreCase("India"))
-					.collect(Collectors.toList());
-			createCasesByCountryDateMap(records, casesByDateMap, lastRecord);
-			coronaStatsCollection.setCoronaCasesGrowthCountry(casesByDateMap);
+			createCasesByCountryDateMap(csvRecords, growthByCountryMap, lastRecord);
+			coronaStatsCollection.setCoronaCasesGrowthCountry(growthByCountryMap);
 		} else {
 			createCasesByDateMap(csvRecords, casesByDateMap, lastRecord);
 			createGrowthFactorMap(growthFactorMap, casesByDateMap, lastRecord);
@@ -70,15 +72,32 @@ public class CoronaGrowthResponseParser implements ResponseParser {
 		}
 	}
 
-	private void createCasesByCountryDateMap(List<CSVRecord> csvRecords, Map<Date, Integer> casesByDateMap,
-			int lastRecord) {
+	private void createCasesByCountryDateMap(List<CSVRecord> csvRecords,
+			Map<String, List<CoronaCaseGrowthStats>> growthByCountryMap, int lastRecord) {
 
-		for (int i = 4; i <= lastRecord; i++) {
-			int fetchFrom = lastRecord - i;
-			Date date = fetchDate(fetchFrom);
-			int rec = StringUtils.isBlank(csvRecords.get(0).get(i)) ? 0 : Integer.valueOf(csvRecords.get(0).get(i));
-			int cases = csvRecords.get(0).get(i) == null ? 0 : rec;
-			casesByDateMap.put(date, cases);
+		for (CSVRecord csvrecord : csvRecords) {
+			List<CoronaCaseGrowthStats> statsList = new LinkedList<>();
+
+			for (int i = 4; i <= lastRecord; i++) {
+				CoronaCaseGrowthStats stats = new CoronaCaseGrowthStats();
+				int fetchFrom = lastRecord - i;
+				Date date = fetchDate(fetchFrom);
+				int cases = 0;
+				if (growthByCountryMap.containsKey(csvrecord.get(1))) {
+					long othercases = growthByCountryMap.get(csvrecord.get(1)).stream()
+							.filter(c -> c.getDate().compareTo(date) == 0)
+							.collect(Collectors.summarizingInt(CoronaCaseGrowthStats::getGrowth)).getSum();
+					cases = (int) (othercases
+							+ (StringUtils.isBlank(csvrecord.get(i)) ? 0 : Integer.valueOf(csvrecord.get(i))));
+				} else {
+					cases = StringUtils.isBlank(csvrecord.get(i)) ? 0 : Integer.valueOf(csvrecord.get(i));
+				}
+				stats.setDate(date);
+				stats.setGrowth(cases);
+				statsList.add(stats);
+			}
+
+			growthByCountryMap.put(csvrecord.get(1), statsList);
 		}
 	}
 

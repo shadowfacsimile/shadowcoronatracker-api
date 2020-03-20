@@ -1,26 +1,26 @@
 package com.shadow.coronatracker.model;
 
-import java.util.Date;
+import java.util.List;
 
 public class CoronaCaseGrowthCountryStats {
 
-	private Date date;
-	private Integer growth;
+	private String country;
+	private List<CoronaCaseGrowthStats> growthStats;
 
-	public Date getDate() {
-		return date;
+	public String getCountry() {
+		return country;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
-	public Integer getGrowth() {
-		return growth;
+	public List<CoronaCaseGrowthStats> getGrowthStats() {
+		return growthStats;
 	}
 
-	public void setGrowth(Integer growth) {
-		this.growth = growth;
+	public void setGrowthStats(List<CoronaCaseGrowthStats> growthStats) {
+		this.growthStats = growthStats;
 	}
 
 }
