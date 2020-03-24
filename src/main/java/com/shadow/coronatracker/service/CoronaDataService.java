@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.shadow.coronatracker.model.CoronaCasesStats;
@@ -95,7 +96,7 @@ public class CoronaDataService {
 			stats.setDeaths(deathsByCountry.get(entry.getKey()));
 			stats.setMortalityRate(stats.getCases() == 0 ? 0 : (double) stats.getDeaths() / stats.getCases());
 			stats.setDeathsSinceYesterday(deathsDeltaByCountry.get(entry.getKey()));
-			stats.setRecoveries(recoveriesByCountry.get(entry.getKey()));
+			stats.setRecoveries(recoveriesByCountry.get(entry.getKey()) == null ? 0 : recoveriesByCountry.get(entry.getKey()));
 			stats.setRecoveryRate(stats.getCases() == 0 ? 0 : (double) stats.getRecoveries() / stats.getCases());
 			stats.setFirstCaseReported(firstCaseCountries.stream()
 					.filter(stat -> stat.getCountry().equalsIgnoreCase(entry.getKey())).count() > 0 ? true : false);
