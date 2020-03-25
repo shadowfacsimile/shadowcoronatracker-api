@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shadow.coronatracker.model.CoronaDataResponse;
+import com.shadow.coronatracker.model.response.CoronaDataResponse;
 import com.shadow.coronatracker.service.CoronaDataService;
 
 @RestController

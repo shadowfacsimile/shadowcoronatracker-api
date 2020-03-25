@@ -1,23 +1,31 @@
-package com.shadow.coronatracker.model;
+package com.shadow.coronatracker.model.response;
 
 import java.util.List;
 
+import com.shadow.coronatracker.model.CoronaCountryStats;
+import com.shadow.coronatracker.model.CoronaSummaryStats;
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthCountryStats;
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthFactorStats;
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthStats;
+import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthCountryStats;
+import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthStats;
+
 public class CoronaDataResponse {
 
-	private List<CoronaData> coronaStats;
 	private CoronaSummaryStats coronaSummaryStats;
+	private List<CoronaCountryStats> coronaCountryStats;
 	private List<CoronaCaseGrowthStats> coronaCaseGrowthStats;
 	private List<CoronaCaseGrowthCountryStats> coronaCaseGrowthCountryStats;
+	private List<CoronaCaseGrowthFactorStats> coronaCaseGrowthFactorStats;
 	private List<CoronaDeathGrowthStats> coronaDeathGrowthStats;
 	private List<CoronaDeathGrowthCountryStats> coronaDeathGrowthCountryStats;
-	private List<CoronaCaseGrowthFactorStats> coronaCaseGrowthFactorStats;
 
-	public List<CoronaData> getCoronaStats() {
-		return coronaStats;
+	public List<CoronaCountryStats> getCoronaCountryStats() {
+		return coronaCountryStats;
 	}
 
-	public void setCoronaStats(List<CoronaData> coronaStats) {
-		this.coronaStats = coronaStats;
+	public void setCoronaCountryStats(List<CoronaCountryStats> coronaCountryStats) {
+		this.coronaCountryStats = coronaCountryStats;
 	}
 
 	public CoronaSummaryStats getCoronaSummaryStats() {

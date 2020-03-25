@@ -1,4 +1,4 @@
-package com.shadow.coronatracker.model;
+package com.shadow.coronatracker.model.casegrowth;
 
 import java.util.List;
 

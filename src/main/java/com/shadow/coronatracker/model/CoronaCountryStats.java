@@ -1,6 +1,6 @@
 package com.shadow.coronatracker.model;
 
-public class CoronaData {
+public class CoronaCountryStats {
 
 	private String state;
 	private String country;

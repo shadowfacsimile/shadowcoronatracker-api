@@ -6,12 +6,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthStats;
+import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthStats;
+
 public class CoronaStatsCollection {
 
 	private List<CoronaCasesStats> coronaCasesStats = new ArrayList<>();
 	private List<CoronaDeathsStats> coronaDeathsStats = new ArrayList<>();
 	private List<CoronaRecoveriesStats> coronaRecoveriesStats = new ArrayList<>();
-	private List<CoronaData> coronaDataList = new ArrayList<>();
+	private List<CoronaCountryStats> coronaCountryStats = new ArrayList<>();
 	private Map<Date, Double> coronaCasesGrowthFactors = new LinkedHashMap<>();
 	private Map<Date, Integer> coronaCasesGrowth = new LinkedHashMap<>();
 	private Map<String, List<CoronaCaseGrowthStats>> coronaCasesGrowthCountry = new LinkedHashMap<>();
@@ -42,12 +45,12 @@ public class CoronaStatsCollection {
 		this.coronaRecoveriesStats = coronaRecoveriesStats;
 	}
 
-	public List<CoronaData> getCoronaDataList() {
-		return coronaDataList;
+	public List<CoronaCountryStats> getCoronaCountryStats() {
+		return coronaCountryStats;
 	}
 
-	public void setCoronaDataList(List<CoronaData> coronaDataList) {
-		this.coronaDataList = coronaDataList;
+	public void setCoronaCountryStats(List<CoronaCountryStats> coronaCountryStats) {
+		this.coronaCountryStats = coronaCountryStats;
 	}
 
 	public Map<Date, Double> getCoronaCasesGrowthFactors() {

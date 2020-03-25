@@ -9,22 +9,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.shadow.coronatracker.model.CoronaCasesStats;
-import com.shadow.coronatracker.model.CoronaData;
-import com.shadow.coronatracker.model.CoronaDataResponse;
+import com.shadow.coronatracker.model.CoronaCountryStats;
 import com.shadow.coronatracker.model.CoronaDeathsStats;
 import com.shadow.coronatracker.model.CoronaRecoveriesStats;
 import com.shadow.coronatracker.model.CoronaStatsCollection;
-import com.shadow.coronatracker.model.ResponseStatistics;
-import com.shadow.coronatracker.model.Statistics;
+import com.shadow.coronatracker.model.enums.ResponseStatistics;
+import com.shadow.coronatracker.model.enums.Statistics;
+import com.shadow.coronatracker.model.response.CoronaDataResponse;
 import com.shadow.coronatracker.util.CoronaTrackerUtil;
 
 @Service
 public class CoronaDataService {
+
+	private static final Logger LOGGER = Logger.getLogger(CoronaDataService.class.getName());
 
 	public CoronaDataResponse fetchCoronaData() throws IOException, InterruptedException {
 
@@ -40,8 +43,9 @@ public class CoronaDataService {
 		for (Statistics statistics : Statistics.values()) {
 			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(statistics.getUrl())).build();
 			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-			statistics.getParser().parse(statistics, CoronaTrackerUtil.convertResponseToCSVRecord(response),
-					coronaStatsCollection);
+			statistics.getParsers().stream().forEach(parser -> parser.parse(statistics,
+					CoronaTrackerUtil.convertResponseToCSVRecord(response), coronaStatsCollection));
+			LOGGER.info(statistics.name() + " / Response code: " + response.statusCode());
 		}
 
 		createCoronaDataListFromStatsCollection(coronaStatsCollection);
@@ -53,8 +57,8 @@ public class CoronaDataService {
 
 		CoronaDataResponse coronaDataResponse = new CoronaDataResponse();
 
-		for (ResponseStatistics stats : ResponseStatistics.values())
-			stats.getCoronaGrowthDataCreator().create(coronaStatsCollection, coronaDataResponse);
+		for (ResponseStatistics responseStats : ResponseStatistics.values())
+			responseStats.getCoronaGrowthDataCreator().create(coronaStatsCollection, coronaDataResponse);
 
 		return coronaDataResponse;
 	}
@@ -85,26 +89,27 @@ public class CoronaDataService {
 		List<CoronaDeathsStats> firstDeathCountries = coronaStatsCollection.getCoronaDeathsStats().stream()
 				.filter(CoronaDeathsStats::isFirstDeathReported).collect(Collectors.toList());
 
-		List<CoronaData> coronaDataList = new ArrayList<>();
+		List<CoronaCountryStats> coronaCountryStats = new ArrayList<>();
 
 		for (Entry<String, Integer> entry : casesByCountry.entrySet()) {
-			CoronaData stats = new CoronaData();
+			CoronaCountryStats stats = new CoronaCountryStats();
 			stats.setCountry(entry.getKey());
 			stats.setCases(entry.getValue());
 			stats.setCasesSinceYesterday(casesDeltaByCountry.get(entry.getKey()));
 			stats.setDeaths(deathsByCountry.get(entry.getKey()));
 			stats.setMortalityRate(stats.getCases() == 0 ? 0 : (double) stats.getDeaths() / stats.getCases());
 			stats.setDeathsSinceYesterday(deathsDeltaByCountry.get(entry.getKey()));
-			stats.setRecoveries(recoveriesByCountry.get(entry.getKey()) == null ? 0 : recoveriesByCountry.get(entry.getKey()));
+			stats.setRecoveries(
+					recoveriesByCountry.get(entry.getKey()) == null ? 0 : recoveriesByCountry.get(entry.getKey()));
 			stats.setRecoveryRate(stats.getCases() == 0 ? 0 : (double) stats.getRecoveries() / stats.getCases());
 			stats.setFirstCaseReported(firstCaseCountries.stream()
 					.filter(stat -> stat.getCountry().equalsIgnoreCase(entry.getKey())).count() > 0 ? true : false);
 			stats.setFirstDeathReported(firstDeathCountries.stream()
 					.filter(stat -> stat.getCountry().equalsIgnoreCase(entry.getKey())).count() > 0 ? true : false);
-			coronaDataList.add(stats);
+			coronaCountryStats.add(stats);
 		}
 
-		coronaStatsCollection.setCoronaDataList(coronaDataList);
+		coronaStatsCollection.setCoronaCountryStats(coronaCountryStats);
 	}
 
 }

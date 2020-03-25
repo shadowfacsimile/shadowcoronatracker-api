@@ -1,6 +1,5 @@
-package com.shadow.coronatracker.util;
+package com.shadow.coronatracker.util.parsers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,13 +8,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.shadow.coronatracker.model.CoronaDeathsStats;
 import com.shadow.coronatracker.model.CoronaStatsCollection;
-import com.shadow.coronatracker.model.Statistics;
+import com.shadow.coronatracker.model.enums.Statistics;
 
 public class CoronaDeathsResponseParser implements ResponseParser {
 
 	@Override
-	public void parse(Statistics statistics, List<CSVRecord> csvRecords, CoronaStatsCollection coronaStatsCollection) throws IOException {
-
+	public void parse(Statistics statistics, List<CSVRecord> csvRecords, CoronaStatsCollection coronaStatsCollection) {
+		
 		List<CoronaDeathsStats> coronaDeathsStats = new ArrayList<>();
 
 		for (CSVRecord record : csvRecords) {
@@ -35,5 +34,4 @@ public class CoronaDeathsResponseParser implements ResponseParser {
 
 		coronaStatsCollection.setCoronaDeathsStats(coronaDeathsStats);
 	}
-
 }

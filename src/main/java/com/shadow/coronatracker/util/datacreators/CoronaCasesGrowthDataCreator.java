@@ -1,4 +1,4 @@
-package com.shadow.coronatracker.util;
+package com.shadow.coronatracker.util.datacreators;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.shadow.coronatracker.model.CoronaCaseGrowthStats;
-import com.shadow.coronatracker.model.CoronaDataResponse;
 import com.shadow.coronatracker.model.CoronaStatsCollection;
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthStats;
+import com.shadow.coronatracker.model.response.CoronaDataResponse;
 
 public class CoronaCasesGrowthDataCreator implements CoronaDataCreator {
 

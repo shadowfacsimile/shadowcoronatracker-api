@@ -1,7 +1,7 @@
-package com.shadow.coronatracker.util;
+package com.shadow.coronatracker.util.datacreators;
 
-import com.shadow.coronatracker.model.CoronaDataResponse;
 import com.shadow.coronatracker.model.CoronaStatsCollection;
+import com.shadow.coronatracker.model.response.CoronaDataResponse;
 
 public interface CoronaDataCreator {
 
