@@ -8,6 +8,8 @@ public class CoronaDataResponse {
 	private CoronaSummaryStats coronaSummaryStats;
 	private List<CoronaCaseGrowthStats> coronaCaseGrowthStats;
 	private List<CoronaCaseGrowthCountryStats> coronaCaseGrowthCountryStats;
+	private List<CoronaDeathGrowthStats> coronaDeathGrowthStats;
+	private List<CoronaDeathGrowthCountryStats> coronaDeathGrowthCountryStats;
 	private List<CoronaCaseGrowthFactorStats> coronaCaseGrowthFactorStats;
 
 	public List<CoronaData> getCoronaStats() {
@@ -48,6 +50,22 @@ public class CoronaDataResponse {
 
 	public void setCoronaCaseGrowthCountryStats(List<CoronaCaseGrowthCountryStats> coronaCaseGrowthCountryStats) {
 		this.coronaCaseGrowthCountryStats = coronaCaseGrowthCountryStats;
+	}
+
+	public List<CoronaDeathGrowthStats> getCoronaDeathGrowthStats() {
+		return coronaDeathGrowthStats;
+	}
+
+	public void setCoronaDeathGrowthStats(List<CoronaDeathGrowthStats> coronaDeathGrowthStats) {
+		this.coronaDeathGrowthStats = coronaDeathGrowthStats;
+	}
+
+	public List<CoronaDeathGrowthCountryStats> getCoronaDeathGrowthCountryStats() {
+		return coronaDeathGrowthCountryStats;
+	}
+
+	public void setCoronaDeathGrowthCountryStats(List<CoronaDeathGrowthCountryStats> coronaDeathGrowthCountryStats) {
+		this.coronaDeathGrowthCountryStats = coronaDeathGrowthCountryStats;
 	}
 
 }

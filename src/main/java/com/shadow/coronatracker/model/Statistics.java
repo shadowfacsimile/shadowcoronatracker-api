@@ -15,10 +15,17 @@ public enum Statistics {
 	RECOVERIES(
 			"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv",
 			new CoronaRecoveriesResponseParser()),
-	GROWTH("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
-			new CoronaGrowthResponseParser()),
-	GROWTH_COUNTRY(
+	CASE_GROWTH(
 			"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
+			new CoronaGrowthResponseParser()),
+	CASE_GROWTH_COUNTRY(
+			"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
+			new CoronaGrowthResponseParser()),
+	DEATH_GROWTH(
+			"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv",
+			new CoronaGrowthResponseParser()),
+	DEATH_GROWTH_COUNTRY(
+			"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv",
 			new CoronaGrowthResponseParser());
 
 	private final String url;

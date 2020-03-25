@@ -15,6 +15,8 @@ public class CoronaStatsCollection {
 	private Map<Date, Double> coronaCasesGrowthFactors = new LinkedHashMap<>();
 	private Map<Date, Integer> coronaCasesGrowth = new LinkedHashMap<>();
 	private Map<String, List<CoronaCaseGrowthStats>> coronaCasesGrowthCountry = new LinkedHashMap<>();
+	private Map<Date, Integer> coronaDeathsGrowth = new LinkedHashMap<>();
+	private Map<String, List<CoronaDeathGrowthStats>> coronaDeathsGrowthCountry = new LinkedHashMap<>();
 
 	public List<CoronaCasesStats> getCoronaCasesStats() {
 		return coronaCasesStats;
@@ -70,6 +72,22 @@ public class CoronaStatsCollection {
 
 	public void setCoronaCasesGrowthCountry(Map<String, List<CoronaCaseGrowthStats>> coronaCasesGrowthCountry) {
 		this.coronaCasesGrowthCountry = coronaCasesGrowthCountry;
+	}
+
+	public Map<Date, Integer> getCoronaDeathsGrowth() {
+		return coronaDeathsGrowth;
+	}
+
+	public void setCoronaDeathsGrowth(Map<Date, Integer> coronaDeathsGrowth) {
+		this.coronaDeathsGrowth = coronaDeathsGrowth;
+	}
+
+	public Map<String, List<CoronaDeathGrowthStats>> getCoronaDeathsGrowthCountry() {
+		return coronaDeathsGrowthCountry;
+	}
+
+	public void setCoronaDeathsGrowthCountry(Map<String, List<CoronaDeathGrowthStats>> coronaDeathsGrowthCountry) {
+		this.coronaDeathsGrowthCountry = coronaDeathsGrowthCountry;
 	}
 
 }

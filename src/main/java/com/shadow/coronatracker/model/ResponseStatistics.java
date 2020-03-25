@@ -6,12 +6,17 @@ import com.shadow.coronatracker.util.CoronaCasesGrowthDataCreator;
 import com.shadow.coronatracker.util.CoronaCasesGrowthFactorDataCreator;
 import com.shadow.coronatracker.util.CoronaCasesSummaryDataCreator;
 import com.shadow.coronatracker.util.CoronaDataCreator;
+import com.shadow.coronatracker.util.CoronaDeathsGrowthCountryDataCreator;
+import com.shadow.coronatracker.util.CoronaDeathsGrowthDataCreator;
 
 public enum ResponseStatistics {
 
 	CASES(new CoronaCasesDataCreator()), SUMMARY(new CoronaCasesSummaryDataCreator()),
-	GROWTH(new CoronaCasesGrowthDataCreator()), GROWTH_FACTOR(new CoronaCasesGrowthFactorDataCreator()),
-	GROWTH_COUNTRY(new CoronaCasesGrowthCountryDataCreator());
+	CASE_GROWTH(new CoronaCasesGrowthDataCreator()),
+	CASE_GROWTH_COUNTRY(new CoronaCasesGrowthCountryDataCreator()),
+	DEATH_GROWTH(new CoronaDeathsGrowthDataCreator()),
+	DEATH_GROWTH_COUNTRY(new CoronaDeathsGrowthCountryDataCreator()),
+	GROWTH_FACTOR(new CoronaCasesGrowthFactorDataCreator());
 
 	private final CoronaDataCreator coronaGrowthDataCreator;
 
