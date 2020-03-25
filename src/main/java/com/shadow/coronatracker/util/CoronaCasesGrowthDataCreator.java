@@ -16,12 +16,16 @@ public class CoronaCasesGrowthDataCreator implements CoronaDataCreator {
 	@Override
 	public void create(CoronaStatsCollection coronaStatsCollection, CoronaDataResponse coronaDataResponse) {
 		List<CoronaCaseGrowthStats> caseGrowthStatsList = new ArrayList<>();
-
+		
+		int delta = 0;
+		
 		for (Entry<Date, Integer> caseGrowth : coronaStatsCollection.getCoronaCasesGrowth().entrySet()) {
 			CoronaCaseGrowthStats caseGrowthStats = new CoronaCaseGrowthStats();
 			caseGrowthStats.setDate(caseGrowth.getKey());
 			caseGrowthStats.setGrowth(caseGrowth.getValue());
+			caseGrowthStats.setDelta(caseGrowth.getValue() - delta);
 			caseGrowthStatsList.add(caseGrowthStats);
+			delta = caseGrowth.getValue();
 		}
 
 		coronaDataResponse.setCoronaCaseGrowthStats(caseGrowthStatsList.stream()

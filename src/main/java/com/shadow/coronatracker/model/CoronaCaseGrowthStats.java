@@ -6,6 +6,7 @@ public class CoronaCaseGrowthStats {
 
 	private Date date;
 	private Integer growth;
+	private Integer delta;
 
 	public Date getDate() {
 		return date;
@@ -21,6 +22,14 @@ public class CoronaCaseGrowthStats {
 
 	public void setGrowth(Integer growth) {
 		this.growth = growth;
+	}
+
+	public Integer getDelta() {
+		return delta;
+	}
+
+	public void setDelta(Integer delta) {
+		this.delta = delta;
 	}
 
 }

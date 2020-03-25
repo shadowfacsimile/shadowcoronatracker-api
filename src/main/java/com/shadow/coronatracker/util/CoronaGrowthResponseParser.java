@@ -77,6 +77,9 @@ public class CoronaGrowthResponseParser implements ResponseParser {
 
 		for (CSVRecord csvrecord : csvRecords) {
 			List<CoronaCaseGrowthStats> statsList = new LinkedList<>();
+			
+
+			int delta = 0;
 
 			for (int i = 4; i <= lastRecord; i++) {
 				CoronaCaseGrowthStats stats = new CoronaCaseGrowthStats();
@@ -94,7 +97,9 @@ public class CoronaGrowthResponseParser implements ResponseParser {
 				}
 				stats.setDate(date);
 				stats.setGrowth(cases);
+				stats.setDelta(cases - delta);
 				statsList.add(stats);
+				delta = cases;
 			}
 
 			growthByCountryMap.put(csvrecord.get(1), statsList);
