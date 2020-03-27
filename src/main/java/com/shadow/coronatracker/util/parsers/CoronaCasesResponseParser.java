@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.shadow.coronatracker.model.CoronaCasesStats;
 import com.shadow.coronatracker.model.CoronaStatsCollection;
+import com.shadow.coronatracker.model.Location;
 import com.shadow.coronatracker.model.enums.Statistics;
 
 public class CoronaCasesResponseParser implements ResponseParser {
@@ -21,10 +22,12 @@ public class CoronaCasesResponseParser implements ResponseParser {
 			int lastRecord = StringUtils.isBlank(record.get(record.size() - 1)) ? record.size() - 2 : record.size() - 1;
 
 			CoronaCasesStats casesStats = new CoronaCasesStats();
-			casesStats.setState(record.get(0));
-			casesStats.setCountry(record.get(1));
-			casesStats.setLatitude(Float.valueOf(record.get(2)));
-			casesStats.setLongitude(Float.valueOf(record.get(3)));
+			Location location = new Location();
+			location.setState(record.get(0));
+			location.setCountry(record.get(1));
+			location.setLatitude(Float.valueOf(record.get(2)));
+			location.setLongitude(Float.valueOf(record.get(3)));
+			casesStats.setLocation(location);
 			casesStats.setCases(Integer.valueOf(record.get(lastRecord)));
 			casesStats.setCasesSinceYesterday(casesStats.getCases() - Integer.valueOf(record.get(lastRecord - 1)));
 			casesStats.setFirstCaseReported(

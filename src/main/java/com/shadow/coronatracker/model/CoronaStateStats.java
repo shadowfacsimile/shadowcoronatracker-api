@@ -1,6 +1,6 @@
 package com.shadow.coronatracker.model;
 
-public class CoronaCountryStats {
+public class CoronaStateStats {
 
 	private Location location;
 	private int cases;
@@ -10,9 +10,6 @@ public class CoronaCountryStats {
 	private double mortalityRate;
 	private int recoveries;
 	private double recoveryRate;
-	private boolean firstCaseReported;
-	private boolean firstDeathReported;
-	private boolean statewiseDataExists;
 
 	public Location getLocation() {
 		return location;
@@ -76,30 +73,6 @@ public class CoronaCountryStats {
 
 	public void setRecoveryRate(double recoveryRate) {
 		this.recoveryRate = recoveryRate;
-	}
-
-	public boolean isFirstCaseReported() {
-		return firstCaseReported;
-	}
-
-	public void setFirstCaseReported(boolean firstCaseReported) {
-		this.firstCaseReported = firstCaseReported;
-	}
-
-	public boolean isFirstDeathReported() {
-		return firstDeathReported;
-	}
-
-	public void setFirstDeathReported(boolean firstDeathReported) {
-		this.firstDeathReported = firstDeathReported;
-	}
-
-	public boolean isStatewiseDataExists() {
-		return statewiseDataExists;
-	}
-
-	public void setStatewiseDataExists(boolean statewiseDataExists) {
-		this.statewiseDataExists = statewiseDataExists;
 	}
 
 }

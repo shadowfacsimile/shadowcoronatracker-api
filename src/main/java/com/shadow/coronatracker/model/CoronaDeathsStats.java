@@ -2,44 +2,17 @@ package com.shadow.coronatracker.model;
 
 public class CoronaDeathsStats {
 
-	private String state;
-	private String country;
-	private float latitude;
-	private float longitude;
+	private Location location;
 	private int deaths;
 	private int deathsSinceYesterday;
 	private boolean firstDeathReported;
 
-	public String getState() {
-		return state;
+	public Location getLocation() {
+		return location;
 	}
 
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
-
-	public float getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(float latitude) {
-		this.latitude = latitude;
-	}
-
-	public float getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(float longitude) {
-		this.longitude = longitude;
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
 	public int getDeaths() {

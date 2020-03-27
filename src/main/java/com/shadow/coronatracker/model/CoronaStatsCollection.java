@@ -1,8 +1,6 @@
 package com.shadow.coronatracker.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,15 +9,16 @@ import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthStats;
 
 public class CoronaStatsCollection {
 
-	private List<CoronaCasesStats> coronaCasesStats = new ArrayList<>();
-	private List<CoronaDeathsStats> coronaDeathsStats = new ArrayList<>();
-	private List<CoronaRecoveriesStats> coronaRecoveriesStats = new ArrayList<>();
-	private List<CoronaCountryStats> coronaCountryStats = new ArrayList<>();
-	private Map<Date, Double> coronaCasesGrowthFactors = new LinkedHashMap<>();
-	private Map<Date, Integer> coronaCasesGrowth = new LinkedHashMap<>();
-	private Map<String, List<CoronaCaseGrowthStats>> coronaCasesGrowthCountry = new LinkedHashMap<>();
-	private Map<Date, Integer> coronaDeathsGrowth = new LinkedHashMap<>();
-	private Map<String, List<CoronaDeathGrowthStats>> coronaDeathsGrowthCountry = new LinkedHashMap<>();
+	private List<CoronaCasesStats> coronaCasesStats;
+	private List<CoronaDeathsStats> coronaDeathsStats;
+	private List<CoronaRecoveriesStats> coronaRecoveriesStats;
+	private List<CoronaCountryStats> coronaCountryStats;
+	private List<CoronaStateStats> coronaStateStats;
+	private Map<Date, Double> coronaCasesGrowthFactors;
+	private Map<Date, Integer> coronaCasesGrowth;
+	private Map<String, List<CoronaCaseGrowthStats>> coronaCasesGrowthCountry;
+	private Map<Date, Integer> coronaDeathsGrowth;
+	private Map<String, List<CoronaDeathGrowthStats>> coronaDeathsGrowthCountry;
 
 	public List<CoronaCasesStats> getCoronaCasesStats() {
 		return coronaCasesStats;
@@ -91,6 +90,14 @@ public class CoronaStatsCollection {
 
 	public void setCoronaDeathsGrowthCountry(Map<String, List<CoronaDeathGrowthStats>> coronaDeathsGrowthCountry) {
 		this.coronaDeathsGrowthCountry = coronaDeathsGrowthCountry;
+	}
+
+	public List<CoronaStateStats> getCoronaStateStats() {
+		return coronaStateStats;
+	}
+
+	public void setCoronaStateStats(List<CoronaStateStats> coronaStateStats) {
+		this.coronaStateStats = coronaStateStats;
 	}
 
 }

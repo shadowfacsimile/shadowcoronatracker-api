@@ -18,26 +18,27 @@ public class CoronaCasesSummaryDataCreator implements CoronaDataCreator {
 
 		CoronaSummaryStats coronaSummaryStats = new CoronaSummaryStats();
 
-		coronaSummaryStats.setTotalCases(coronaDataList.stream().collect(Collectors.summingInt(CoronaCountryStats::getCases)));
+		coronaSummaryStats
+				.setTotalCases(coronaDataList.stream().collect(Collectors.summingInt(CoronaCountryStats::getCases)));
 		coronaSummaryStats.setTotalCasesSinceYesterday(
 				coronaDataList.stream().collect(Collectors.summingInt(CoronaCountryStats::getCasesSinceYesterday)));
 		coronaSummaryStats
 				.setTotalDeaths(coronaDataList.stream().collect(Collectors.summingInt(CoronaCountryStats::getDeaths)));
 		coronaSummaryStats.setTotalDeathsSinceYesterday(
 				coronaDataList.stream().collect(Collectors.summingInt(CoronaCountryStats::getDeathsSinceYesterday)));
-		coronaSummaryStats
-				.setTotalRecoveries(coronaDataList.stream().collect(Collectors.summingInt(CoronaCountryStats::getRecoveries)));
+		coronaSummaryStats.setTotalRecoveries(
+				coronaDataList.stream().collect(Collectors.summingInt(CoronaCountryStats::getRecoveries)));
 		coronaSummaryStats
 				.setMortalityRate((double) coronaSummaryStats.getTotalDeaths() / coronaSummaryStats.getTotalCases());
 		coronaSummaryStats
 				.setRecoveryRate((double) coronaSummaryStats.getTotalRecoveries() / coronaSummaryStats.getTotalCases());
 		coronaSummaryStats.setCountriesWithFirstCase(coronaDataList.stream().filter(stat -> stat.isFirstCaseReported())
-				.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getCountry()))
-				.map(stat -> stat.getCountry()).collect(Collectors.toList()));
+				.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getLocation().getCountry()))
+				.map(stat -> stat.getLocation().getCountry()).collect(Collectors.toList()));
 		coronaSummaryStats
 				.setCountriesWithFirstDeath(coronaDataList.stream().filter(stat -> stat.isFirstDeathReported())
-						.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getCountry()))
-						.map(stat -> stat.getCountry()).collect(Collectors.toList()));
+						.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getLocation().getCountry()))
+						.map(stat -> stat.getLocation().getCountry()).collect(Collectors.toList()));
 
 		coronaDataResponse.setCoronaSummaryStats(coronaSummaryStats);
 	}
