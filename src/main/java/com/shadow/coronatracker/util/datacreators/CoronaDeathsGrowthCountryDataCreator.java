@@ -7,26 +7,26 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.shadow.coronatracker.model.CoronaStatsCollection;
-import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthCountryStats;
-import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthStats;
+import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthCountry;
+import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowth;
 import com.shadow.coronatracker.model.response.CoronaDataResponse;
 
 public class CoronaDeathsGrowthCountryDataCreator implements CoronaDataCreator {
 
 	@Override
 	public void create(CoronaStatsCollection coronaStatsCollection, CoronaDataResponse coronaDataResponse) {
-		List<CoronaDeathGrowthCountryStats> deathGrowthStatsList = new ArrayList<>();
+		List<CoronaDeathGrowthCountry> deathGrowthStatsList = new ArrayList<>();
 
-		for (Entry<String, List<CoronaDeathGrowthStats>> deathGrowth : coronaStatsCollection.getCoronaDeathsGrowthCountry()
+		for (Entry<String, List<CoronaDeathGrowth>> deathGrowth : coronaStatsCollection.getCoronaDeathsGrowthCountry()
 				.entrySet()) {
-			CoronaDeathGrowthCountryStats deathGrowthStats = new CoronaDeathGrowthCountryStats();
+			CoronaDeathGrowthCountry deathGrowthStats = new CoronaDeathGrowthCountry();
 			deathGrowthStats.setCountry(deathGrowth.getKey());
 			deathGrowthStats.setGrowthStats(deathGrowth.getValue());
 			deathGrowthStatsList.add(deathGrowthStats);
 		}
 
-		coronaDataResponse.setCoronaDeathGrowthCountryStats(deathGrowthStatsList.stream()
-				.sorted(Comparator.comparing(CoronaDeathGrowthCountryStats::getCountry)).collect(Collectors.toList()));
+		coronaDataResponse.setCoronaDeathGrowthCountriesStats(deathGrowthStatsList.stream()
+				.sorted(Comparator.comparing(CoronaDeathGrowthCountry::getCountry)).collect(Collectors.toList()));
 
 	}
 

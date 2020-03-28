@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -15,6 +16,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
 public class CoronaTrackerUtil {
+
+	private static final Logger LOGGER = Logger.getLogger(CoronaTrackerUtil.class.getName());
 
 	public static final List<String> filterCountries = Arrays.asList("Australia", "Hong Kong SAR",
 			"Iran (Islamic Republic of)", "Republic of Korea", "Mainland China", "US", "France", "Canada", "UK",
@@ -28,8 +31,7 @@ public class CoronaTrackerUtil {
 			records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
 			csvRecords = StreamSupport.stream(records.spliterator(), false).collect(Collectors.toList());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.severe("Error in processing data : " + e.getMessage());
 		}
 
 		return csvRecords;

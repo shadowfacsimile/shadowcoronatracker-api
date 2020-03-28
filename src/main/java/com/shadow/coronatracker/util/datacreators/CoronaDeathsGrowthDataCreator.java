@@ -8,19 +8,19 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.shadow.coronatracker.model.CoronaStatsCollection;
-import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthStats;
+import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowth;
 import com.shadow.coronatracker.model.response.CoronaDataResponse;
 
 public class CoronaDeathsGrowthDataCreator implements CoronaDataCreator {
 
 	@Override
 	public void create(CoronaStatsCollection coronaStatsCollection, CoronaDataResponse coronaDataResponse) {
-		List<CoronaDeathGrowthStats> deathGrowthStatsList = new ArrayList<>();
+		List<CoronaDeathGrowth> deathGrowthStatsList = new ArrayList<>();
 
 		int delta = 0;
 
 		for (Entry<Date, Integer> deathGrowth : coronaStatsCollection.getCoronaDeathsGrowth().entrySet()) {
-			CoronaDeathGrowthStats deathGrowthStats = new CoronaDeathGrowthStats();
+			CoronaDeathGrowth deathGrowthStats = new CoronaDeathGrowth();
 			deathGrowthStats.setDate(deathGrowth.getKey());
 			deathGrowthStats.setGrowth(deathGrowth.getValue());
 			deathGrowthStats.setDelta(deathGrowth.getValue() - delta);
@@ -29,7 +29,7 @@ public class CoronaDeathsGrowthDataCreator implements CoronaDataCreator {
 		}
 
 		coronaDataResponse.setCoronaDeathGrowthStats(deathGrowthStatsList.stream()
-				.sorted(Comparator.comparing(CoronaDeathGrowthStats::getDate)).collect(Collectors.toList()));
+				.sorted(Comparator.comparing(CoronaDeathGrowth::getDate)).collect(Collectors.toList()));
 	}
 
 }

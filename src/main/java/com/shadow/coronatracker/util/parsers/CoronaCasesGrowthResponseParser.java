@@ -11,7 +11,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 
 import com.shadow.coronatracker.model.CoronaStatsCollection;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthStats;
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowth;
 import com.shadow.coronatracker.model.enums.Statistics;
 import com.shadow.coronatracker.util.CoronaTrackerUtil;
 
@@ -22,7 +22,7 @@ public class CoronaCasesGrowthResponseParser implements ResponseParser {
 
 		Map<Date, Double> growthFactorMap = new LinkedHashMap<>();
 		Map<Date, Integer> casesByDateMap = new LinkedHashMap<>();
-		Map<String, List<CoronaCaseGrowthStats>> caseGrowthByCountryMap = new LinkedHashMap<>();
+		Map<String, List<CoronaCaseGrowth>> caseGrowthByCountryMap = new LinkedHashMap<>();
 
 		CSVRecord record = csvRecords.get(0);
 
@@ -64,22 +64,22 @@ public class CoronaCasesGrowthResponseParser implements ResponseParser {
 	}
 
 	private void createCasesByCountryDateMap(List<CSVRecord> csvRecords,
-			Map<String, List<CoronaCaseGrowthStats>> growthByCountryMap, int lastRecord) {
+			Map<String, List<CoronaCaseGrowth>> growthByCountryMap, int lastRecord) {
 
 		for (CSVRecord csvrecord : csvRecords) {
-			List<CoronaCaseGrowthStats> statsList = new LinkedList<>();
+			List<CoronaCaseGrowth> statsList = new LinkedList<>();
 
 			int delta = 0;
 
 			for (int i = 4; i <= lastRecord; i++) {
-				CoronaCaseGrowthStats stats = new CoronaCaseGrowthStats();
+				CoronaCaseGrowth stats = new CoronaCaseGrowth();
 				int fetchFrom = lastRecord - i;
 				Date date = CoronaTrackerUtil.fetchDate(fetchFrom);
 				int cases = 0;
 				if (growthByCountryMap.containsKey(csvrecord.get(1))) {
 					long othercases = growthByCountryMap.get(csvrecord.get(1)).stream()
 							.filter(c -> c.getDate().compareTo(date) == 0)
-							.collect(Collectors.summarizingInt(CoronaCaseGrowthStats::getGrowth)).getSum();
+							.collect(Collectors.summarizingInt(CoronaCaseGrowth::getGrowth)).getSum();
 					cases = (int) (othercases
 							+ (StringUtils.isBlank(csvrecord.get(i)) ? 0 : Integer.valueOf(csvrecord.get(i))));
 				} else {

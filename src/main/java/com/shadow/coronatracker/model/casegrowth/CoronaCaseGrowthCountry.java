@@ -2,10 +2,10 @@ package com.shadow.coronatracker.model.casegrowth;
 
 import java.util.List;
 
-public class CoronaCaseGrowthCountryStats {
+public class CoronaCaseGrowthCountry {
 
 	private String country;
-	private List<CoronaCaseGrowthStats> growthStats;
+	private List<CoronaCaseGrowth> growthStats;
 
 	public String getCountry() {
 		return country;
@@ -15,11 +15,11 @@ public class CoronaCaseGrowthCountryStats {
 		this.country = country;
 	}
 
-	public List<CoronaCaseGrowthStats> getGrowthStats() {
+	public List<CoronaCaseGrowth> getGrowthStats() {
 		return growthStats;
 	}
 
-	public void setGrowthStats(List<CoronaCaseGrowthStats> growthStats) {
+	public void setGrowthStats(List<CoronaCaseGrowth> growthStats) {
 		this.growthStats = growthStats;
 	}
 

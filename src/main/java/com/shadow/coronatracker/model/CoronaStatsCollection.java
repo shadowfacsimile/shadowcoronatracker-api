@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthStats;
-import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthStats;
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowth;
+import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowth;
 
 public class CoronaStatsCollection {
 
@@ -16,9 +16,9 @@ public class CoronaStatsCollection {
 	private List<CoronaStateStats> coronaStateStats;
 	private Map<Date, Double> coronaCasesGrowthFactors;
 	private Map<Date, Integer> coronaCasesGrowth;
-	private Map<String, List<CoronaCaseGrowthStats>> coronaCasesGrowthCountry;
+	private Map<String, List<CoronaCaseGrowth>> coronaCasesGrowthCountry;
 	private Map<Date, Integer> coronaDeathsGrowth;
-	private Map<String, List<CoronaDeathGrowthStats>> coronaDeathsGrowthCountry;
+	private Map<String, List<CoronaDeathGrowth>> coronaDeathsGrowthCountry;
 
 	public List<CoronaCasesStats> getCoronaCasesStats() {
 		return coronaCasesStats;
@@ -68,11 +68,11 @@ public class CoronaStatsCollection {
 		this.coronaCasesGrowth = coronaCasesGrowth;
 	}
 
-	public Map<String, List<CoronaCaseGrowthStats>> getCoronaCasesGrowthCountry() {
+	public Map<String, List<CoronaCaseGrowth>> getCoronaCasesGrowthCountry() {
 		return coronaCasesGrowthCountry;
 	}
 
-	public void setCoronaCasesGrowthCountry(Map<String, List<CoronaCaseGrowthStats>> coronaCasesGrowthCountry) {
+	public void setCoronaCasesGrowthCountry(Map<String, List<CoronaCaseGrowth>> coronaCasesGrowthCountry) {
 		this.coronaCasesGrowthCountry = coronaCasesGrowthCountry;
 	}
 
@@ -84,11 +84,11 @@ public class CoronaStatsCollection {
 		this.coronaDeathsGrowth = coronaDeathsGrowth;
 	}
 
-	public Map<String, List<CoronaDeathGrowthStats>> getCoronaDeathsGrowthCountry() {
+	public Map<String, List<CoronaDeathGrowth>> getCoronaDeathsGrowthCountry() {
 		return coronaDeathsGrowthCountry;
 	}
 
-	public void setCoronaDeathsGrowthCountry(Map<String, List<CoronaDeathGrowthStats>> coronaDeathsGrowthCountry) {
+	public void setCoronaDeathsGrowthCountry(Map<String, List<CoronaDeathGrowth>> coronaDeathsGrowthCountry) {
 		this.coronaDeathsGrowthCountry = coronaDeathsGrowthCountry;
 	}
 

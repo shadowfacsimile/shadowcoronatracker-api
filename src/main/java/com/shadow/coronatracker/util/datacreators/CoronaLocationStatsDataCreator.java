@@ -13,10 +13,10 @@ public class CoronaLocationStatsDataCreator implements CoronaDataCreator {
 	@Override
 	public void create(CoronaStatsCollection coronaStatsCollection, CoronaDataResponse coronaDataResponse) {
 
-		coronaDataResponse.setCoronaCountryStats(coronaStatsCollection.getCoronaCountryStats().stream()
+		coronaDataResponse.setCoronaCountriesStats(coronaStatsCollection.getCoronaCountryStats().stream()
 				.sorted(Comparator.comparingInt(CoronaCountryStats::getCases).reversed()).collect(Collectors.toList()));
 		
-		coronaDataResponse.setCoronaStateStats(coronaStatsCollection.getCoronaStateStats().stream()
+		coronaDataResponse.setCoronaStatesStats(coronaStatsCollection.getCoronaStateStats().stream()
 				.sorted(Comparator.comparingInt(CoronaStateStats::getCases).reversed()).collect(Collectors.toList()));
 	}
 }

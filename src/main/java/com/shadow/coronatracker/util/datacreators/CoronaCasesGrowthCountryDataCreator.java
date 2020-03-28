@@ -7,26 +7,26 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.shadow.coronatracker.model.CoronaStatsCollection;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthCountryStats;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthStats;
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthCountry;
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowth;
 import com.shadow.coronatracker.model.response.CoronaDataResponse;
 
 public class CoronaCasesGrowthCountryDataCreator implements CoronaDataCreator {
 
 	@Override
 	public void create(CoronaStatsCollection coronaStatsCollection, CoronaDataResponse coronaDataResponse) {
-		List<CoronaCaseGrowthCountryStats> caseGrowthStatsList = new ArrayList<>();
+		List<CoronaCaseGrowthCountry> caseGrowthStatsList = new ArrayList<>();
 
-		for (Entry<String, List<CoronaCaseGrowthStats>> caseGrowth : coronaStatsCollection.getCoronaCasesGrowthCountry()
+		for (Entry<String, List<CoronaCaseGrowth>> caseGrowth : coronaStatsCollection.getCoronaCasesGrowthCountry()
 				.entrySet()) {
-			CoronaCaseGrowthCountryStats caseGrowthStats = new CoronaCaseGrowthCountryStats();
+			CoronaCaseGrowthCountry caseGrowthStats = new CoronaCaseGrowthCountry();
 			caseGrowthStats.setCountry(caseGrowth.getKey());
 			caseGrowthStats.setGrowthStats(caseGrowth.getValue());
 			caseGrowthStatsList.add(caseGrowthStats);
 		}
 
-		coronaDataResponse.setCoronaCaseGrowthCountryStats(caseGrowthStatsList.stream()
-				.sorted(Comparator.comparing(CoronaCaseGrowthCountryStats::getCountry)).collect(Collectors.toList()));
+		coronaDataResponse.setCoronaCaseGrowthCountriesStats(caseGrowthStatsList.stream()
+				.sorted(Comparator.comparing(CoronaCaseGrowthCountry::getCountry)).collect(Collectors.toList()));
 
 	}
 

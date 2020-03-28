@@ -2,25 +2,28 @@ package com.shadow.coronatracker.model.response;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.shadow.coronatracker.model.CoronaCountryStats;
 import com.shadow.coronatracker.model.CoronaStateStats;
 import com.shadow.coronatracker.model.CoronaSummaryStats;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthCountryStats;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthFactorStats;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthStats;
-import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthCountryStats;
-import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthStats;
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowth;
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthCountry;
+import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthFactor;
+import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowth;
+import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthCountry;
 
+@Component
 public class CoronaDataResponse {
 
 	private CoronaSummaryStats coronaSummaryStats;
-	private List<CoronaCountryStats> coronaCountryStats;
-	private List<CoronaStateStats> coronaStateStats;
-	private List<CoronaCaseGrowthStats> coronaCaseGrowthStats;
-	private List<CoronaCaseGrowthCountryStats> coronaCaseGrowthCountryStats;
-	private List<CoronaCaseGrowthFactorStats> coronaCaseGrowthFactorStats;
-	private List<CoronaDeathGrowthStats> coronaDeathGrowthStats;
-	private List<CoronaDeathGrowthCountryStats> coronaDeathGrowthCountryStats;
+	private List<CoronaCountryStats> coronaCountriesStats;
+	private List<CoronaStateStats> coronaStatesStats;
+	private List<CoronaCaseGrowth> coronaCaseGrowthStats;
+	private List<CoronaCaseGrowthCountry> coronaCaseGrowthCountriesStats;
+	private List<CoronaCaseGrowthFactor> coronaCaseGrowthFactorStats;
+	private List<CoronaDeathGrowth> coronaDeathGrowthStats;
+	private List<CoronaDeathGrowthCountry> coronaDeathGrowthCountriesStats;
 
 	public CoronaSummaryStats getCoronaSummaryStats() {
 		return coronaSummaryStats;
@@ -30,60 +33,60 @@ public class CoronaDataResponse {
 		this.coronaSummaryStats = coronaSummaryStats;
 	}
 
-	public List<CoronaCountryStats> getCoronaCountryStats() {
-		return coronaCountryStats;
+	public List<CoronaCountryStats> getCoronaCountriesStats() {
+		return coronaCountriesStats;
 	}
 
-	public void setCoronaCountryStats(List<CoronaCountryStats> coronaCountryStats) {
-		this.coronaCountryStats = coronaCountryStats;
+	public void setCoronaCountriesStats(List<CoronaCountryStats> coronaCountriesStats) {
+		this.coronaCountriesStats = coronaCountriesStats;
 	}
 
-	public List<CoronaStateStats> getCoronaStateStats() {
-		return coronaStateStats;
+	public List<CoronaStateStats> getCoronaStatesStats() {
+		return coronaStatesStats;
 	}
 
-	public void setCoronaStateStats(List<CoronaStateStats> coronaStateStats) {
-		this.coronaStateStats = coronaStateStats;
+	public void setCoronaStatesStats(List<CoronaStateStats> coronaStatesStats) {
+		this.coronaStatesStats = coronaStatesStats;
 	}
 
-	public List<CoronaCaseGrowthStats> getCoronaCaseGrowthStats() {
+	public List<CoronaCaseGrowth> getCoronaCaseGrowthStats() {
 		return coronaCaseGrowthStats;
 	}
 
-	public void setCoronaCaseGrowthStats(List<CoronaCaseGrowthStats> coronaCaseGrowthStats) {
+	public void setCoronaCaseGrowthStats(List<CoronaCaseGrowth> coronaCaseGrowthStats) {
 		this.coronaCaseGrowthStats = coronaCaseGrowthStats;
 	}
 
-	public List<CoronaCaseGrowthCountryStats> getCoronaCaseGrowthCountryStats() {
-		return coronaCaseGrowthCountryStats;
+	public List<CoronaCaseGrowthCountry> getCoronaCaseGrowthCountriesStats() {
+		return coronaCaseGrowthCountriesStats;
 	}
 
-	public void setCoronaCaseGrowthCountryStats(List<CoronaCaseGrowthCountryStats> coronaCaseGrowthCountryStats) {
-		this.coronaCaseGrowthCountryStats = coronaCaseGrowthCountryStats;
+	public void setCoronaCaseGrowthCountriesStats(List<CoronaCaseGrowthCountry> coronaCaseGrowthCountriesStats) {
+		this.coronaCaseGrowthCountriesStats = coronaCaseGrowthCountriesStats;
 	}
 
-	public List<CoronaCaseGrowthFactorStats> getCoronaCaseGrowthFactorStats() {
+	public List<CoronaCaseGrowthFactor> getCoronaCaseGrowthFactorStats() {
 		return coronaCaseGrowthFactorStats;
 	}
 
-	public void setCoronaCaseGrowthFactorStats(List<CoronaCaseGrowthFactorStats> coronaCaseGrowthFactorStats) {
+	public void setCoronaCaseGrowthFactorStats(List<CoronaCaseGrowthFactor> coronaCaseGrowthFactorStats) {
 		this.coronaCaseGrowthFactorStats = coronaCaseGrowthFactorStats;
 	}
 
-	public List<CoronaDeathGrowthStats> getCoronaDeathGrowthStats() {
+	public List<CoronaDeathGrowth> getCoronaDeathGrowthStats() {
 		return coronaDeathGrowthStats;
 	}
 
-	public void setCoronaDeathGrowthStats(List<CoronaDeathGrowthStats> coronaDeathGrowthStats) {
+	public void setCoronaDeathGrowthStats(List<CoronaDeathGrowth> coronaDeathGrowthStats) {
 		this.coronaDeathGrowthStats = coronaDeathGrowthStats;
 	}
 
-	public List<CoronaDeathGrowthCountryStats> getCoronaDeathGrowthCountryStats() {
-		return coronaDeathGrowthCountryStats;
+	public List<CoronaDeathGrowthCountry> getCoronaDeathGrowthCountriesStats() {
+		return coronaDeathGrowthCountriesStats;
 	}
 
-	public void setCoronaDeathGrowthCountryStats(List<CoronaDeathGrowthCountryStats> coronaDeathGrowthCountryStats) {
-		this.coronaDeathGrowthCountryStats = coronaDeathGrowthCountryStats;
+	public void setCoronaDeathGrowthCountriesStats(List<CoronaDeathGrowthCountry> coronaDeathGrowthCountriesStats) {
+		this.coronaDeathGrowthCountriesStats = coronaDeathGrowthCountriesStats;
 	}
 
 }

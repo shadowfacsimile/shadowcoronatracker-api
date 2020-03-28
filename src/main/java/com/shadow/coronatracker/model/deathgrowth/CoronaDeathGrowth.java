@@ -1,8 +1,8 @@
-package com.shadow.coronatracker.model.casegrowth;
+package com.shadow.coronatracker.model.deathgrowth;
 
 import java.util.Date;
 
-public class CoronaCaseGrowthStats {
+public class CoronaDeathGrowth {
 
 	private Date date;
 	private Integer growth;
