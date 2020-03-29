@@ -22,13 +22,7 @@ import com.shadow.coronatracker.model.CoronaDeathsStats;
 import com.shadow.coronatracker.model.CoronaRecoveriesStats;
 import com.shadow.coronatracker.model.CoronaStateStats;
 import com.shadow.coronatracker.model.CoronaStatsCollection;
-import com.shadow.coronatracker.model.CoronaSummaryStats;
 import com.shadow.coronatracker.model.Location;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowth;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthCountry;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthFactor;
-import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowth;
-import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthCountry;
 import com.shadow.coronatracker.model.enums.ResponseStatistics;
 import com.shadow.coronatracker.model.enums.Statistics;
 import com.shadow.coronatracker.model.response.CoronaDataResponse;
@@ -50,64 +44,13 @@ public class CoronaDataService {
 		this.coronaDataResponse = coronaDataResponse;
 	}
 
-	public CoronaSummaryStats getCoronaSummaryStats() {
-		LOGGER.info("Inside getCoronaSummaryStats()");
-		return coronaDataResponse.getCoronaSummaryStats() == null ? this.fetchCoronaData().getCoronaSummaryStats()
-				: coronaDataResponse.getCoronaSummaryStats();
-	}
-
-	public List<CoronaCountryStats> getCoronaCountriesStats() {
-		LOGGER.info("Inside getCoronaCountriesStats()");
-		return coronaDataResponse.getCoronaCountriesStats() == null ? this.fetchCoronaData().getCoronaCountriesStats()
-				: coronaDataResponse.getCoronaCountriesStats();
-	}
-
-	public List<CoronaStateStats> getCoronaStatesStats() {
-		LOGGER.info("Inside getCoronaStatesStats()");
-		return coronaDataResponse.getCoronaStatesStats() == null ? this.fetchCoronaData().getCoronaStatesStats()
-				: coronaDataResponse.getCoronaStatesStats();
-	}
-
-	public List<CoronaCaseGrowth> getCoronaCaseGrowthStats() {
-		LOGGER.info("Inside getCoronaCaseGrowthStats()");
-		return coronaDataResponse.getCoronaCaseGrowthStats() == null ? this.fetchCoronaData().getCoronaCaseGrowthStats()
-				: coronaDataResponse.getCoronaCaseGrowthStats();
-	}
-
-	public List<CoronaCaseGrowthCountry> getCoronaCaseGrowthCountriesStats() {
-		LOGGER.info("Inside getCoronaCaseGrowthCountriesStats()");
-		return coronaDataResponse.getCoronaCaseGrowthCountriesStats() == null
-				? this.fetchCoronaData().getCoronaCaseGrowthCountriesStats()
-				: coronaDataResponse.getCoronaCaseGrowthCountriesStats();
-	}
-
-	public List<CoronaCaseGrowthFactor> getCoronaCaseGrowthFactorStats() {
-		LOGGER.info("Inside getCoronaCaseGrowthFactorStats()");
-		return coronaDataResponse.getCoronaCaseGrowthFactorStats() == null
-				? this.fetchCoronaData().getCoronaCaseGrowthFactorStats()
-				: coronaDataResponse.getCoronaCaseGrowthFactorStats();
-	}
-
-	public List<CoronaDeathGrowth> getCoronaDeathGrowthStats() {
-		LOGGER.info("Inside getCoronaDeathGrowthStats()");
-		return coronaDataResponse.getCoronaDeathGrowthStats() == null
-				? this.fetchCoronaData().getCoronaDeathGrowthStats()
-				: coronaDataResponse.getCoronaDeathGrowthStats();
-	}
-
-	public List<CoronaDeathGrowthCountry> getCoronaDeathGrowthCountriesStats() {
-		LOGGER.info("Inside getCoronaDeathGrowthCountriesStats()");
-		return coronaDataResponse.getCoronaDeathGrowthCountriesStats() == null
-				? this.fetchCoronaData().getCoronaDeathGrowthCountriesStats()
-				: coronaDataResponse.getCoronaDeathGrowthCountriesStats();
-	}
-
 	public CoronaDataResponse fetchCoronaData() {
 		LOGGER.info(
 				"***** Inside CoronaDataService.fetchCoronaData() / Fetching Data From Johns Hopkins CSSE Repo *****");
 
-		CoronaStatsCollection coronaStatsCollection = this.createCoronaStatsCollectionByFetchingData();
-		this.createCoronaDataResponse(coronaStatsCollection);
+		CoronaStatsCollection coronaStatsCollection = createCoronaStatsCollectionByFetchingData();
+		generateCountryAndStateStats(coronaStatsCollection);
+		createCoronaDataResponse(coronaStatsCollection);
 
 		LOGGER.info("***** Inside CoronaDataService.fetchCoronaData() / Data synch completed *****");
 
@@ -133,8 +76,6 @@ public class CoronaDataService {
 			}
 		}
 
-		createCoronaDataListFromStatsCollection(coronaStatsCollection);
-
 		return coronaStatsCollection;
 	}
 
@@ -145,27 +86,18 @@ public class CoronaDataService {
 		for (ResponseStatistics responseStats : ResponseStatistics.values())
 			responseStats.getCoronaDataCreator().create(coronaStatsCollection, tempCoronaDataResponse);
 
-		this.setCoronaDataResponse(tempCoronaDataResponse);
+		setCoronaDataResponse(tempCoronaDataResponse);
 
 		return coronaDataResponse;
 	}
 
-	private void createCoronaDataListFromStatsCollection(final CoronaStatsCollection coronaStatsCollection) {
+	private void generateCountryAndStateStats(final CoronaStatsCollection coronaStatsCollection) {
 
-		List<CoronaCountryStats> coronaCountryStats = new ArrayList<>();
-
-		createCoronaCountryLevelStats(coronaStatsCollection, coronaCountryStats);
-
-		List<CoronaStateStats> coronaStateStats = new ArrayList<>();
-
-		createCoronaStateLevelStats(coronaStatsCollection, coronaStateStats);
-
-		coronaStatsCollection.setCoronaCountryStats(coronaCountryStats);
-		coronaStatsCollection.setCoronaStateStats(coronaStateStats);
+		coronaStatsCollection.setCoronaCountryStats(createCoronaCountryLevelStats(coronaStatsCollection));
+		coronaStatsCollection.setCoronaStateStats(createCoronaStateLevelStats(coronaStatsCollection));
 	}
 
-	private void createCoronaCountryLevelStats(final CoronaStatsCollection coronaStatsCollection,
-			List<CoronaCountryStats> coronaCountryStats) {
+	private List<CoronaCountryStats> createCoronaCountryLevelStats(final CoronaStatsCollection coronaStatsCollection) {
 
 		Map<String, List<CoronaCasesStats>> casesByCountry = coronaStatsCollection.getCoronaCasesStats().stream()
 				.collect(Collectors.groupingBy(stat -> stat.getLocation().getCountry()));
@@ -176,33 +108,41 @@ public class CoronaDataService {
 		Map<String, List<CoronaRecoveriesStats>> recoveriesByCountry = coronaStatsCollection.getCoronaRecoveriesStats()
 				.stream().collect(Collectors.groupingBy(stat -> stat.getLocation().getCountry()));
 
+		List<CoronaCountryStats> coronaCountryStats = new ArrayList<>();
+
 		for (Entry<String, List<CoronaCasesStats>> entry : casesByCountry.entrySet()) {
+			String country = entry.getKey();
+			List<CoronaCasesStats> casesStats = entry.getValue();
+			List<CoronaDeathsStats> deathsStats = deathsByCountry.get(country);
+			List<CoronaRecoveriesStats> recoveriesStats = recoveriesByCountry.get(country);
+
 			CoronaCountryStats stats = new CoronaCountryStats();
 			Location location = new Location();
-			location.setCountry(entry.getKey());
+			location.setCountry(country);
 			stats.setLocation(location);
-			stats.setCases(entry.getValue().stream().mapToInt(CoronaCasesStats::getCases).sum());
-			stats.setCasesSinceYesterday(
-					entry.getValue().stream().mapToInt(CoronaCasesStats::getCasesSinceYesterday).sum());
-			stats.setDeaths(deathsByCountry.get(entry.getKey()).stream().mapToInt(CoronaDeathsStats::getDeaths).sum());
+			stats.setCases(casesStats == null ? 0 : casesStats.stream().mapToInt(CoronaCasesStats::getCases).sum());
+			stats.setCasesSinceYesterday(casesStats == null ? 0
+					: casesStats.stream().mapToInt(CoronaCasesStats::getCasesSinceYesterday).sum());
+			stats.setDeaths(
+					deathsStats == null ? 0 : deathsStats.stream().mapToInt(CoronaDeathsStats::getDeaths).sum());
+			stats.setDeathsSinceYesterday(deathsStats == null ? 0
+					: deathsStats.stream().mapToInt(CoronaDeathsStats::getDeathsSinceYesterday).sum());
 			stats.setMortalityRate(stats.getCases() == 0 ? 0 : (double) stats.getDeaths() / stats.getCases());
-			stats.setDeathsSinceYesterday(deathsByCountry.get(entry.getKey()).stream()
-					.mapToInt(CoronaDeathsStats::getDeathsSinceYesterday).sum());
-			stats.setRecoveries(recoveriesByCountry.get(entry.getKey()) == null ? 0
-					: recoveriesByCountry.get(entry.getKey()).stream().mapToInt(CoronaRecoveriesStats::getRecoveries)
-							.sum());
+			stats.setRecoveries(recoveriesStats == null ? 0
+					: recoveriesStats.stream().mapToInt(CoronaRecoveriesStats::getRecoveries).sum());
 			stats.setRecoveryRate(stats.getCases() == 0 ? 0 : (double) stats.getRecoveries() / stats.getCases());
-			stats.setFirstCaseReported(
-					entry.getValue().stream().filter(CoronaCasesStats::isFirstCaseReported).count() > 0 ? true : false);
-			stats.setFirstDeathReported(deathsByCountry.get(entry.getKey()).stream()
-					.filter(CoronaDeathsStats::isFirstDeathReported).count() > 0 ? true : false);
-			stats.setStatewiseDataExists(entry.getValue().stream().count() > 1);
+			stats.setFirstCaseReported(casesStats == null ? false
+					: casesStats.stream().filter(CoronaCasesStats::isFirstCaseReported).count() > 0);
+			stats.setFirstDeathReported(deathsStats == null ? false
+					: deathsStats.stream().filter(CoronaDeathsStats::isFirstDeathReported).count() > 0);
+			stats.setStatewiseDataExists(casesStats.stream().count() > 1);
 			coronaCountryStats.add(stats);
 		}
+
+		return coronaCountryStats;
 	}
 
-	private void createCoronaStateLevelStats(final CoronaStatsCollection coronaStatsCollection,
-			List<CoronaStateStats> coronaStateStats) {
+	private List<CoronaStateStats> createCoronaStateLevelStats(final CoronaStatsCollection coronaStatsCollection) {
 
 		Map<String, List<CoronaCasesStats>> casesByState = coronaStatsCollection.getCoronaCasesStats().stream()
 				.filter(stat -> StringUtils.isNotBlank(stat.getLocation().getState()))
@@ -216,26 +156,36 @@ public class CoronaDataService {
 				.stream().filter(stat -> StringUtils.isNotBlank(stat.getLocation().getState()))
 				.collect(Collectors.groupingBy(stat -> stat.getLocation().getState()));
 
+		List<CoronaStateStats> coronaStateStats = new ArrayList<>();
+
 		for (Entry<String, List<CoronaCasesStats>> entry : casesByState.entrySet()) {
+			String state = entry.getKey();
+			String country = entry.getValue().get(0).getLocation().getCountry();
+			List<CoronaCasesStats> casesStats = entry.getValue();
+			List<CoronaDeathsStats> deathsStats = deathsByState.get(state);
+			List<CoronaRecoveriesStats> recoveriesStats = recoveriesByState.get(state);
+
 			CoronaStateStats stats = new CoronaStateStats();
 			Location location = new Location();
-			location.setCountry(entry.getValue().get(0).getLocation().getCountry());
-			location.setState(entry.getKey());
+			location.setCountry(country);
+			location.setState(state);
 			stats.setLocation(location);
-			stats.setCases(entry.getValue().stream().mapToInt(CoronaCasesStats::getCases).sum());
-			stats.setCasesSinceYesterday(
-					entry.getValue().stream().mapToInt(CoronaCasesStats::getCasesSinceYesterday).sum());
-			stats.setDeaths(deathsByState.get(entry.getKey()).stream().mapToInt(CoronaDeathsStats::getDeaths).sum());
+			stats.setCases(casesStats == null ? 0 : casesStats.stream().mapToInt(CoronaCasesStats::getCases).sum());
+			stats.setCasesSinceYesterday(casesStats == null ? 0
+					: casesStats.stream().mapToInt(CoronaCasesStats::getCasesSinceYesterday).sum());
+			stats.setDeaths(
+					deathsStats == null ? 0 : deathsStats.stream().mapToInt(CoronaDeathsStats::getDeaths).sum());
 			stats.setMortalityRate(stats.getCases() == 0 ? 0 : (double) stats.getDeaths() / stats.getCases());
-			stats.setDeathsSinceYesterday(deathsByState.get(entry.getKey()).stream()
-					.mapToInt(CoronaDeathsStats::getDeathsSinceYesterday).sum());
-			stats.setRecoveries(recoveriesByState.get(entry.getKey()) == null ? 0
-					: recoveriesByState.get(entry.getKey()).stream().mapToInt(CoronaRecoveriesStats::getRecoveries)
-							.sum());
+			stats.setDeathsSinceYesterday(deathsStats == null ? 0
+					: deathsStats.stream().mapToInt(CoronaDeathsStats::getDeathsSinceYesterday).sum());
+			stats.setRecoveries(recoveriesStats == null ? 0
+					: recoveriesByState.get(state).stream().mapToInt(CoronaRecoveriesStats::getRecoveries).sum());
 			stats.setRecoveryRate(stats.getCases() == 0 ? 0 : (double) stats.getRecoveries() / stats.getCases());
 
 			coronaStateStats.add(stats);
 		}
+
+		return coronaStateStats;
 	}
 
 }
