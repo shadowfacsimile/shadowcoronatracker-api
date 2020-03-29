@@ -5,7 +5,6 @@ import java.io.StringReader;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,10 +17,6 @@ import org.apache.commons.csv.CSVRecord;
 public class CoronaTrackerUtil {
 
 	private static final Logger LOGGER = Logger.getLogger(CoronaTrackerUtil.class.getName());
-
-	public static final List<String> filterCountries = Arrays.asList("Australia", "Hong Kong SAR",
-			"Iran (Islamic Republic of)", "Republic of Korea", "Mainland China", "US", "France", "Canada", "UK",
-			"United States", "United Kingdom");
 
 	public static List<CSVRecord> convertResponseToCSVRecord(final HttpResponse<String> response) {
 		StringReader reader = new StringReader(response.body());

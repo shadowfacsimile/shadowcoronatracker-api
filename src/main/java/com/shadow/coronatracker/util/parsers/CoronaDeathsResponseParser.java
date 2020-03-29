@@ -1,7 +1,9 @@
 package com.shadow.coronatracker.util.parsers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
@@ -15,8 +17,12 @@ public class CoronaDeathsResponseParser implements ResponseParser {
 
 	@Override
 	public void parse(Statistics statistics, List<CSVRecord> csvRecords, CoronaStatsCollection coronaStatsCollection) {
-		
+
 		List<CoronaDeathsStats> coronaDeathsStats = new ArrayList<>();
+
+		List<String> countries = csvRecords.stream().map(stat -> stat.get(1)).collect(Collectors.toList());
+		List<String> filterCountries = countries.stream().filter(i -> Collections.frequency(countries, i) > 1)
+				.collect(Collectors.toList());
 
 		for (CSVRecord record : csvRecords) {
 			int lastRecord = StringUtils.isBlank(record.get(record.size() - 1)) ? record.size() - 2 : record.size() - 1;
@@ -31,7 +37,8 @@ public class CoronaDeathsResponseParser implements ResponseParser {
 			deathsStats.setDeaths(Integer.valueOf(record.get(lastRecord)));
 			deathsStats.setDeathsSinceYesterday(deathsStats.getDeaths() - Integer.valueOf(record.get(lastRecord - 1)));
 			deathsStats.setFirstDeathReported(
-					record.get(lastRecord - 1).equalsIgnoreCase("0") && !record.get(lastRecord).equalsIgnoreCase("0"));
+					!filterCountries.contains(record.get(1)) && record.get(lastRecord - 1).equalsIgnoreCase("0")
+							&& !record.get(lastRecord).equalsIgnoreCase("0"));
 			coronaDeathsStats.add(deathsStats);
 		}
 

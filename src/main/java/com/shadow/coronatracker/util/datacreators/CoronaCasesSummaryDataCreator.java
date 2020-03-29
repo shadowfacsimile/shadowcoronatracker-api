@@ -7,7 +7,6 @@ import com.shadow.coronatracker.model.CoronaCountryStats;
 import com.shadow.coronatracker.model.CoronaStatsCollection;
 import com.shadow.coronatracker.model.CoronaSummaryStats;
 import com.shadow.coronatracker.model.response.CoronaDataResponse;
-import com.shadow.coronatracker.util.CoronaTrackerUtil;
 
 public class CoronaCasesSummaryDataCreator implements CoronaDataCreator {
 
@@ -33,11 +32,9 @@ public class CoronaCasesSummaryDataCreator implements CoronaDataCreator {
 		coronaSummaryStats
 				.setRecoveryRate((double) coronaSummaryStats.getTotalRecoveries() / coronaSummaryStats.getTotalCases());
 		coronaSummaryStats.setCountriesWithFirstCase(coronaDataList.stream().filter(stat -> stat.isFirstCaseReported())
-				.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getLocation().getCountry()))
 				.map(stat -> stat.getLocation().getCountry()).collect(Collectors.toList()));
 		coronaSummaryStats
 				.setCountriesWithFirstDeath(coronaDataList.stream().filter(stat -> stat.isFirstDeathReported())
-						.filter(stat -> !CoronaTrackerUtil.filterCountries.contains(stat.getLocation().getCountry()))
 						.map(stat -> stat.getLocation().getCountry()).collect(Collectors.toList()));
 
 		coronaDataResponse.setCoronaSummaryStats(coronaSummaryStats);
