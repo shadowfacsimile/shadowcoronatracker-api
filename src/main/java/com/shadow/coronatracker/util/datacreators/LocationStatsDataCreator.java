@@ -9,15 +9,15 @@ import com.shadow.coronatracker.model.Location;
 import com.shadow.coronatracker.model.LocationCases;
 import com.shadow.coronatracker.model.LocationDeaths;
 import com.shadow.coronatracker.model.LocationRecoveries;
-import com.shadow.coronatracker.model.StatsCollection;
-import com.shadow.coronatracker.model.response.CoronaStatsResponse;
+import com.shadow.coronatracker.model.StatisticsCollection;
+import com.shadow.coronatracker.model.response.CoronaDataResponse;
 import com.shadow.coronatracker.model.summary.CountrySummary;
 import com.shadow.coronatracker.model.summary.StateSummary;
 
 public class LocationStatsDataCreator implements DataCreator {
 
 	@Override
-	public void create(StatsCollection statsCollection, CoronaStatsResponse coronaDataResponse) {
+	public void create(StatisticsCollection statsCollection, CoronaDataResponse coronaDataResponse) {
 
 		createCountryLevelStats(statsCollection);
 		createStateLevelStats(statsCollection);
@@ -30,73 +30,125 @@ public class LocationStatsDataCreator implements DataCreator {
 
 	}
 
-	private void createCountryLevelStats(final StatsCollection statsCollection) {
+	private void createCountryLevelStats(StatisticsCollection statsCollection) {
 
 		List<CountrySummary> countrySummaryStats = new LinkedList<>();
 
-		for (LocationCases locationCases : statsCollection.getLocationCasesStats()) {
-			CountrySummary countrySummary = countrySummaryStats.stream()
-					.filter(stat -> locationCases.getLocation().getCountry().equals(stat.getLocation().getCountry()))
-					.findFirst().orElse(new CountrySummary());
-			LocationDeaths locationDeaths = statsCollection.getLocationDeathsStats().stream()
-					.filter(stats -> stats.getLocation().equals(locationCases.getLocation())).findFirst().orElse(null);
-			LocationRecoveries locationRecoveries = statsCollection.getLocationRecoveriesStats().stream()
-					.filter(stats -> stats.getLocation().equals(locationCases.getLocation())).findFirst().orElse(null);
-
-			countrySummary.setLocation(createLocation(locationCases, false));
-			countrySummary
-					.setCases(countrySummary.getCases() + locationCases.getCases().get(locationCases.getCurrDate()));
-			countrySummary.setNewCases(
-					countrySummary.getNewCases() + locationCases.getNewCases().get(locationCases.getCurrDate()));
-			countrySummary.setDeaths(locationDeaths == null ? 0
-					: countrySummary.getDeaths() + locationDeaths.getDeaths().get(locationCases.getCurrDate()));
-			countrySummary.setNewDeaths(locationDeaths == null ? 0
-					: countrySummary.getNewDeaths() + locationDeaths.getNewDeaths().get(locationCases.getCurrDate()));
-			countrySummary.setRecoveries(locationRecoveries == null ? 0
-					: countrySummary.getRecoveries()
-							+ locationRecoveries.getRecoveries().get(locationCases.getCurrDate()));
-			countrySummary.setStatewiseDataExists(statsCollection.getLocationCasesStats().stream()
-					.filter(stats -> stats.getLocation().getCountry().equals(locationCases.getLocation().getCountry()))
-					.count() > 1);
-			countrySummary.setMortalityRate(countrySummary.getCases() == 0 ? 0
-					: (double) countrySummary.getDeaths() / countrySummary.getCases());
-			countrySummary.setRecoveryRate(countrySummary.getCases() == 0 ? 0
-					: (double) countrySummary.getRecoveries() / countrySummary.getCases());
-			countrySummaryStats.add(countrySummary);
-		}
+		statsCollection.getLocationCasesStats().stream().forEach(
+				locationCases -> countrySummaryStatsMapper(statsCollection, countrySummaryStats, locationCases));
 
 		statsCollection.setCountrySummaryStats(countrySummaryStats);
 	}
 
-	private void createStateLevelStats(final StatsCollection statsCollection) {
+	private void countrySummaryStatsMapper(StatisticsCollection statsCollection,
+			List<CountrySummary> countrySummaryStats, LocationCases locationCases) {
+		LocationDeaths locationDeaths = fetchLocationDeathsForThisLocation(statsCollection, locationCases);
+		LocationRecoveries locationRecoveries = fetchLocationRecoveriesForThisLocation(statsCollection, locationCases);
+
+		CountrySummary countrySummary = fetchCountrySummaryStatsIfAlreadyExists(countrySummaryStats, locationCases);
+		countrySummary.setLocation(createLocation(locationCases, false));
+		countrySummary.setCases(fetchCummulativeCasesForCountry(locationCases, countrySummary));
+		countrySummary.setNewCases(fetchCummulativeNewCasesForCountry(locationCases, countrySummary));
+		countrySummary.setDeaths(fetchCummulativeDeathsForCountry(locationCases, locationDeaths, countrySummary));
+		countrySummary.setNewDeaths(fetchCummulativeNewDeathsForCountry(locationCases, locationDeaths, countrySummary));
+		countrySummary
+				.setRecoveries(fetchCummulativeRecoveriesForCountry(locationCases, locationRecoveries, countrySummary));
+		countrySummary.setStatewiseDataExists(doesStatewiseDataExistForThisCountry(statsCollection, locationCases));
+		countrySummary.setMortalityRate(calcualteMortalityRateForCountry(countrySummary));
+		countrySummary.setRecoveryRate(calculateRecoveryRateForCountry(countrySummary));
+		countrySummaryStats.add(countrySummary);
+	}
+
+	private double calculateRecoveryRateForCountry(CountrySummary countrySummary) {
+		return countrySummary.getCases() == 0 ? 0 : (double) countrySummary.getRecoveries() / countrySummary.getCases();
+	}
+
+	private double calcualteMortalityRateForCountry(CountrySummary countrySummary) {
+		return countrySummary.getCases() == 0 ? 0 : (double) countrySummary.getDeaths() / countrySummary.getCases();
+	}
+
+	private boolean doesStatewiseDataExistForThisCountry(final StatisticsCollection statsCollection,
+			LocationCases locationCases) {
+		return statsCollection.getLocationCasesStats().stream()
+				.filter(stats -> stats.getLocation().getCountry().equals(locationCases.getLocation().getCountry()))
+				.count() > 1;
+	}
+
+	private int fetchCummulativeRecoveriesForCountry(LocationCases locationCases, LocationRecoveries locationRecoveries,
+			CountrySummary countrySummary) {
+		return locationRecoveries == null ? 0
+				: countrySummary.getRecoveries() + locationRecoveries.getRecoveries().get(locationCases.getCurrDate());
+	}
+
+	private int fetchCummulativeNewDeathsForCountry(LocationCases locationCases, LocationDeaths locationDeaths,
+			CountrySummary countrySummary) {
+		return locationDeaths == null ? 0
+				: countrySummary.getNewDeaths() + locationDeaths.getNewDeaths().get(locationCases.getCurrDate());
+	}
+
+	private int fetchCummulativeDeathsForCountry(LocationCases locationCases, LocationDeaths locationDeaths,
+			CountrySummary countrySummary) {
+		return locationDeaths == null ? 0
+				: countrySummary.getDeaths() + locationDeaths.getDeaths().get(locationCases.getCurrDate());
+	}
+
+	private int fetchCummulativeNewCasesForCountry(LocationCases locationCases, CountrySummary countrySummary) {
+		return countrySummary.getNewCases() + locationCases.getNewCases().get(locationCases.getCurrDate());
+	}
+
+	private int fetchCummulativeCasesForCountry(LocationCases locationCases, CountrySummary countrySummary) {
+		return countrySummary.getCases() + locationCases.getCases().get(locationCases.getCurrDate());
+	}
+
+	private LocationRecoveries fetchLocationRecoveriesForThisLocation(final StatisticsCollection statsCollection,
+			LocationCases locationCases) {
+		return statsCollection.getLocationRecoveriesStats().stream()
+				.filter(stats -> stats.getLocation().equals(locationCases.getLocation())).findFirst().orElse(null);
+	}
+
+	private LocationDeaths fetchLocationDeathsForThisLocation(final StatisticsCollection statsCollection,
+			LocationCases locationCases) {
+		return statsCollection.getLocationDeathsStats().stream()
+				.filter(stats -> stats.getLocation().equals(locationCases.getLocation())).findFirst().orElse(null);
+	}
+
+	private CountrySummary fetchCountrySummaryStatsIfAlreadyExists(List<CountrySummary> countrySummaryStats,
+			LocationCases locationCases) {
+		return countrySummaryStats.stream()
+				.filter(stat -> locationCases.getLocation().getCountry().equals(stat.getLocation().getCountry()))
+				.findFirst().orElse(new CountrySummary());
+	}
+
+	private void createStateLevelStats(StatisticsCollection statsCollection) {
 
 		List<StateSummary> stateSummaryStats = new LinkedList<>();
 
-		for (LocationCases locationCases : statsCollection.getLocationCasesStats()) {
-
-			LocationDeaths locationDeaths = statsCollection.getLocationDeathsStats().stream()
-					.filter(stats -> stats.getLocation().equals(locationCases.getLocation())).findFirst().orElse(null);
-			LocationRecoveries locationRecoveries = statsCollection.getLocationRecoveriesStats().stream()
-					.filter(stats -> stats.getLocation().equals(locationCases.getLocation())).findFirst().orElse(null);
-
-			StateSummary stateSummary = new StateSummary();
-			stateSummary.setLocation(createLocation(locationCases, true));
-			stateSummary.setCases(locationCases.getCases().get(locationCases.getCurrDate()));
-			stateSummary.setNewCases(locationCases.getNewCases().get(locationCases.getCurrDate()));
-			stateSummary.setDeaths(
-					locationDeaths == null ? 0 : locationDeaths.getDeaths().get(locationCases.getCurrDate()));
-			stateSummary.setNewDeaths(
-					locationDeaths == null ? 0 : locationDeaths.getNewDeaths().get(locationCases.getCurrDate()));
-			stateSummary.setRecoveries(locationRecoveries == null ? 0
-					: locationRecoveries.getRecoveries().get(locationCases.getCurrDate()));
-			stateSummary.setMortalityRate(
-					stateSummary.getCases() == 0 ? 0 : (double) stateSummary.getDeaths() / stateSummary.getCases());
-			stateSummary.setRecoveryRate(
-					stateSummary.getCases() == 0 ? 0 : (double) stateSummary.getRecoveries() / stateSummary.getCases());
-			stateSummaryStats.add(stateSummary);
-		}
+		statsCollection.getLocationCasesStats().stream()
+				.forEach(locationCases -> stateSummaryStatsMapper(statsCollection, stateSummaryStats, locationCases));
 
 		statsCollection.setStateSummaryStats(stateSummaryStats);
+	}
+
+	private void stateSummaryStatsMapper(StatisticsCollection statsCollection, List<StateSummary> stateSummaryStats,
+			LocationCases locationCases) {
+		LocationDeaths locationDeaths = fetchLocationDeathsForThisLocation(statsCollection, locationCases);
+		LocationRecoveries locationRecoveries = fetchLocationRecoveriesForThisLocation(statsCollection, locationCases);
+
+		StateSummary stateSummary = new StateSummary();
+		stateSummary.setLocation(createLocation(locationCases, true));
+		stateSummary.setCases(locationCases.getCases().get(locationCases.getCurrDate()));
+		stateSummary.setNewCases(locationCases.getNewCases().get(locationCases.getCurrDate()));
+		stateSummary
+				.setDeaths(locationDeaths == null ? 0 : locationDeaths.getDeaths().get(locationCases.getCurrDate()));
+		stateSummary.setNewDeaths(
+				locationDeaths == null ? 0 : locationDeaths.getNewDeaths().get(locationCases.getCurrDate()));
+		stateSummary.setRecoveries(
+				locationRecoveries == null ? 0 : locationRecoveries.getRecoveries().get(locationCases.getCurrDate()));
+		stateSummary.setMortalityRate(
+				stateSummary.getCases() == 0 ? 0 : (double) stateSummary.getDeaths() / stateSummary.getCases());
+		stateSummary.setRecoveryRate(
+				stateSummary.getCases() == 0 ? 0 : (double) stateSummary.getRecoveries() / stateSummary.getCases());
+		stateSummaryStats.add(stateSummary);
 	}
 
 	private Location createLocation(LocationCases locationCases, boolean isStateLevel) {

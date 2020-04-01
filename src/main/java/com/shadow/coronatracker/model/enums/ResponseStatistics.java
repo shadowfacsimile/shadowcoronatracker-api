@@ -17,14 +17,14 @@ public enum ResponseStatistics {
 	DEATH_GROWTH_COUNTRY(new CountryDeathsGrowthDataCreator()), 
 	DEATH_GROWTH(new DeathsGrowthDataCreator());
 
-	private final DataCreator coronaDataCreator;
+	private final DataCreator dataCreator;
 
-	private ResponseStatistics(DataCreator coronaDataCreator) {
-		this.coronaDataCreator = coronaDataCreator;
+	private ResponseStatistics(DataCreator dataCreator) {
+		this.dataCreator = dataCreator;
 	}
 
-	public DataCreator getCoronaDataCreator() {
-		return coronaDataCreator;
+	public DataCreator getDataCreator() {
+		return dataCreator;
 	}
 
 }

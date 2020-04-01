@@ -19,11 +19,11 @@ public class CoronaDataScheduler {
 	@Scheduled(cron = "0 0/15 * * * ?")
 	public void syncCoronaData() {
 		LOGGER.info(
-				"***** Inside CoronaDataScheduler.fetchCoronaData() / Fetching Data From Johns Hopkins CSSE Repo *****");
+				"***** Inside CoronaDataScheduler.syncCoronaData() / Fetching Data From Johns Hopkins CSSE Repo *****");
 
-		coronaDataService.fetchCoronaData();
+		coronaDataService.fetchCoronaDataFromJHCSSE();
 
-		LOGGER.info("***** Inside CoronaDataScheduler.fetchCoronaData() / Data synch completed *****");
+		LOGGER.info("***** Inside CoronaDataScheduler.syncCoronaData() / Data synch completed *****");
 	}
 
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 import com.shadow.coronatracker.model.summary.CountrySummary;
 import com.shadow.coronatracker.model.summary.StateSummary;
 
-public class StatsCollection {
+public class StatisticsCollection {
 
 	private List<LocationCases> locationCasesStats;
 	private List<LocationDeaths> locationDeathsStats;

@@ -13,7 +13,7 @@ import com.shadow.coronatracker.model.summary.StateSummary;
 import com.shadow.coronatracker.model.summary.Summary;
 
 @Component
-public class CoronaStatsResponse {
+public class CoronaDataResponse {
 
 	private Summary summaryStats;
 	private List<CountrySummary> countrySummaryStats;

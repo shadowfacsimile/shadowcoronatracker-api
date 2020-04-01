@@ -8,7 +8,7 @@ public class LocationCases {
 	private Map<String, Integer> cases;
 	private Map<String, Integer> newCases;
 	private String currDate;
-	private boolean casesReported;
+	private boolean isFirstCase;
 
 	public Location getLocation() {
 		return location;
@@ -42,12 +42,12 @@ public class LocationCases {
 		this.currDate = currDate;
 	}
 
-	public boolean isCasesReported() {
-		return casesReported;
+	public boolean isFirstCase() {
+		return isFirstCase;
 	}
 
-	public void setCasesReported(boolean casesReported) {
-		this.casesReported = casesReported;
+	public void setFirstCase(boolean isFirstCase) {
+		this.isFirstCase = isFirstCase;
 	}
 
 }

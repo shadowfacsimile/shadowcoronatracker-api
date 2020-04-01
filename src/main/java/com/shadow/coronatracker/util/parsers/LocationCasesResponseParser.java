@@ -4,18 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.lang3.StringUtils;
 
 import com.shadow.coronatracker.model.Location;
 import com.shadow.coronatracker.model.LocationCases;
-import com.shadow.coronatracker.model.StatsCollection;
+import com.shadow.coronatracker.model.StatisticsCollection;
 import com.shadow.coronatracker.model.enums.Statistics;
 import com.shadow.coronatracker.util.CoronaTrackerUtil;
 
 public class LocationCasesResponseParser implements ResponseParser {
 
 	@Override
-	public void parse(Statistics statistics, List<CSVRecord> csvRecords, StatsCollection statsCollection) {
+	public void parse(Statistics statistics, List<CSVRecord> csvRecords, StatisticsCollection statsCollection) {
 
 		List<String> filterCountries = CoronaTrackerUtil.fetchDuplicateCountries(csvRecords);
 
@@ -23,21 +22,27 @@ public class LocationCasesResponseParser implements ResponseParser {
 
 		List<LocationCases> locationCasesStats = new ArrayList<>();
 
-		for (CSVRecord record : csvRecords) {
-			int lastRecord = record.size() - 1;
-			lastRecord = StringUtils.isBlank(record.get(lastRecord)) ? lastRecord - 1 : lastRecord;
-
-			LocationCases locationCases = new LocationCases();
-			locationCases.setLocation(createLocation(record));
-			locationCases.setCases(CoronaTrackerUtil.createLocationStatsMap(header, record, false));
-			locationCases.setNewCases(CoronaTrackerUtil.createLocationStatsMap(header, record, true));
-			locationCases.setCurrDate(header.get(lastRecord));
-			locationCases.setCasesReported(!filterCountries.contains(record.get(1))
-					&& record.get(lastRecord - 1).equals("0") && !record.get(lastRecord).equals("0"));
-			locationCasesStats.add(locationCases);
-		}
+		csvRecords.stream()
+				.forEach(record -> locationCasesStats.add(locationCasesMapper(filterCountries, header, record)));
 
 		statsCollection.setLocationCasesStats(locationCasesStats);
+	}
+
+	private LocationCases locationCasesMapper(List<String> filterCountries, CSVRecord header, CSVRecord record) {
+		int lastRecord = CoronaTrackerUtil.fetchLastNonblankRecordIndex(record);
+
+		LocationCases locationCases = new LocationCases();
+		locationCases.setLocation(createLocation(record));
+		locationCases.setCases(CoronaTrackerUtil.createLocationStatsMap(header, record, false));
+		locationCases.setNewCases(CoronaTrackerUtil.createLocationStatsMap(header, record, true));
+		locationCases.setCurrDate(header.get(lastRecord));
+		locationCases.setFirstCase(isThisFirstReportedCase(filterCountries, record, lastRecord));
+		return locationCases;
+	}
+
+	private boolean isThisFirstReportedCase(List<String> filterCountries, CSVRecord record, int lastRecord) {
+		return !filterCountries.contains(record.get(1)) && record.get(lastRecord - 1).equals("0")
+				&& !record.get(lastRecord).equals("0");
 	}
 
 	private Location createLocation(CSVRecord record) {

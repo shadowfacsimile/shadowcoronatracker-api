@@ -8,7 +8,7 @@ public class LocationDeaths {
 	private Map<String, Integer> deaths;
 	private Map<String, Integer> newDeaths;
 	private String currDate;
-	private boolean deathsReported;
+	private boolean isFirstDeath;
 
 	public Location getLocation() {
 		return location;
@@ -42,12 +42,12 @@ public class LocationDeaths {
 		this.currDate = currDate;
 	}
 
-	public boolean isDeathsReported() {
-		return deathsReported;
+	public boolean isFirstDeath() {
+		return isFirstDeath;
 	}
 
-	public void setDeathsReported(boolean deathsReported) {
-		this.deathsReported = deathsReported;
+	public void setFirstDeath(boolean isFirstDeath) {
+		this.isFirstDeath = isFirstDeath;
 	}
 
 }

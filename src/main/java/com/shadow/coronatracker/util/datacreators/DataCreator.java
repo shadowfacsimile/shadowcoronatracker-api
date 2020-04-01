@@ -1,10 +1,10 @@
 package com.shadow.coronatracker.util.datacreators;
 
-import com.shadow.coronatracker.model.StatsCollection;
-import com.shadow.coronatracker.model.response.CoronaStatsResponse;
+import com.shadow.coronatracker.model.StatisticsCollection;
+import com.shadow.coronatracker.model.response.CoronaDataResponse;
 
 public interface DataCreator {
 
-	void create(StatsCollection statsCollection, CoronaStatsResponse coronaDataResponse);
+	void create(StatisticsCollection statsCollection, CoronaDataResponse coronaDataResponse);
 
 }
