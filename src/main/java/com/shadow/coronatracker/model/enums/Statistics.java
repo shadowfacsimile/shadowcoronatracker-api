@@ -3,22 +3,20 @@ package com.shadow.coronatracker.model.enums;
 import java.util.Arrays;
 import java.util.List;
 
-import com.shadow.coronatracker.util.parsers.CoronaCasesGrowthResponseParser;
-import com.shadow.coronatracker.util.parsers.CoronaCasesResponseParser;
-import com.shadow.coronatracker.util.parsers.CoronaDeathsGrowthResponseParser;
-import com.shadow.coronatracker.util.parsers.CoronaDeathsResponseParser;
-import com.shadow.coronatracker.util.parsers.CoronaRecoveriesResponseParser;
+import com.shadow.coronatracker.util.parsers.LocationCasesResponseParser;
+import com.shadow.coronatracker.util.parsers.LocationDeathsResponseParser;
+import com.shadow.coronatracker.util.parsers.LocationRecoveriesResponseParser;
 import com.shadow.coronatracker.util.parsers.ResponseParser;
 
 public enum Statistics {
 
 	CASES("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
-			Arrays.asList(new CoronaCasesResponseParser(), new CoronaCasesGrowthResponseParser())),
+			Arrays.asList(new LocationCasesResponseParser())), // , new CoronaCasesGrowthResponseParser())),
 	DEATHS("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv",
-			Arrays.asList(new CoronaDeathsResponseParser(), new CoronaDeathsGrowthResponseParser())),
+			Arrays.asList(new LocationDeathsResponseParser())),
 	RECOVERIES(
 			"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv",
-			Arrays.asList(new CoronaRecoveriesResponseParser()));
+			Arrays.asList(new LocationRecoveriesResponseParser()));
 
 	private final String url;
 	private final List<ResponseParser> parsers;

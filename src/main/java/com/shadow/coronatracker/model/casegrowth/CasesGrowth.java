@@ -1,18 +1,16 @@
 package com.shadow.coronatracker.model.casegrowth;
 
-import java.util.Date;
+public class CasesGrowth {
 
-public class CoronaCaseGrowth {
-
-	private Date date;
+	private String date;
 	private Integer growth;
 	private Integer delta;
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

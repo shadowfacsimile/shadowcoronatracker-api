@@ -1,13 +1,13 @@
-package com.shadow.coronatracker.model;
+package com.shadow.coronatracker.model.summary;
 
 import java.util.List;
 
-public class CoronaSummaryStats {
+public class Summary {
 
 	private int totalCases;
-	private int totalCasesSinceYesterday;
+	private int totalNewCases;
 	private int totalDeaths;
-	private int totalDeathsSinceYesterday;
+	private int totalNewDeaths;
 	private int totalRecoveries;
 	private double mortalityRate;
 	private double recoveryRate;
@@ -22,12 +22,12 @@ public class CoronaSummaryStats {
 		this.totalCases = totalCases;
 	}
 
-	public int getTotalCasesSinceYesterday() {
-		return totalCasesSinceYesterday;
+	public int getTotalNewCases() {
+		return totalNewCases;
 	}
 
-	public void setTotalCasesSinceYesterday(int totalCasesSinceYesterday) {
-		this.totalCasesSinceYesterday = totalCasesSinceYesterday;
+	public void setTotalNewCases(int totalNewCases) {
+		this.totalNewCases = totalNewCases;
 	}
 
 	public int getTotalDeaths() {
@@ -38,12 +38,12 @@ public class CoronaSummaryStats {
 		this.totalDeaths = totalDeaths;
 	}
 
-	public int getTotalDeathsSinceYesterday() {
-		return totalDeathsSinceYesterday;
+	public int getTotalNewDeaths() {
+		return totalNewDeaths;
 	}
 
-	public void setTotalDeathsSinceYesterday(int totalDeathsSinceYesterday) {
-		this.totalDeathsSinceYesterday = totalDeathsSinceYesterday;
+	public void setTotalNewDeaths(int totalNewDeaths) {
+		this.totalNewDeaths = totalNewDeaths;
 	}
 
 	public int getTotalRecoveries() {

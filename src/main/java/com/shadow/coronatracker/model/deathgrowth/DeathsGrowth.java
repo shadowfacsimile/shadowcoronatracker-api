@@ -1,18 +1,16 @@
 package com.shadow.coronatracker.model.deathgrowth;
 
-import java.util.Date;
+public class DeathsGrowth {
 
-public class CoronaDeathGrowth {
-
-	private Date date;
+	private String date;
 	private Integer growth;
 	private Integer delta;
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 

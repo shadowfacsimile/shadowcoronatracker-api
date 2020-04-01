@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shadow.coronatracker.model.CoronaCountryStats;
-import com.shadow.coronatracker.model.CoronaStateStats;
-import com.shadow.coronatracker.model.CoronaSummaryStats;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowth;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthCountry;
-import com.shadow.coronatracker.model.casegrowth.CoronaCaseGrowthFactor;
-import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowth;
-import com.shadow.coronatracker.model.deathgrowth.CoronaDeathGrowthCountry;
+import com.shadow.coronatracker.model.casegrowth.CasesGrowth;
+import com.shadow.coronatracker.model.casegrowth.CountryCasesGrowth;
+import com.shadow.coronatracker.model.deathgrowth.CountryDeathsGrowth;
+import com.shadow.coronatracker.model.deathgrowth.DeathsGrowth;
+import com.shadow.coronatracker.model.summary.CountrySummary;
+import com.shadow.coronatracker.model.summary.StateSummary;
+import com.shadow.coronatracker.model.summary.Summary;
 import com.shadow.coronatracker.service.CoronaDataService;
 
 @RestController
@@ -32,110 +31,88 @@ public class CoronaRestService {
 
 	@GetMapping("/stats/summary")
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	public CoronaSummaryStats getCoronaSummaryStats() {
-		LOGGER.info("Inside getCoronaSummaryStats()");
-		CoronaSummaryStats coronaSummaryStats = coronaDataService.getCoronaDataResponse().getCoronaSummaryStats();
-		return coronaSummaryStats == null ? coronaDataService.fetchCoronaData().getCoronaSummaryStats()
-				: coronaSummaryStats;
+	public Summary getSummaryStats() {
+		LOGGER.info("Inside getSummaryStats()");
+		Summary summaryStats = coronaDataService.getCoronaDataResponse().getSummaryStats();
+		return summaryStats == null ? coronaDataService.fetchCoronaData().getSummaryStats() : summaryStats;
 	}
 
 	@GetMapping(value = { "/stats/countries", "/stats/countries/{country}" })
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	public List<CoronaCountryStats> getCoronaCountriesStats(
+	public List<CountrySummary> getCountrySummaryStats(
 			@PathVariable(name = "country", required = false) String country) {
-		LOGGER.info("Inside getCoronaCountriesStats()");
+		LOGGER.info("Inside getCountrySummaryStats()");
 
-		List<CoronaCountryStats> coronaCountriesStats = coronaDataService.getCoronaDataResponse()
-				.getCoronaCountriesStats();
-		coronaCountriesStats = (coronaCountriesStats == null)
-				? coronaDataService.fetchCoronaData().getCoronaCountriesStats()
-				: coronaCountriesStats;
-		List<CoronaCountryStats> filteredCoronaCountriesStats = (country == null) ? coronaCountriesStats
-				: coronaCountriesStats.stream()
-						.filter(stats -> stats.getLocation().getCountry().equalsIgnoreCase(country))
+		List<CountrySummary> CountriesStats = coronaDataService.getCoronaDataResponse().getCountrySummaryStats();
+		CountriesStats = (CountriesStats == null) ? coronaDataService.fetchCoronaData().getCountrySummaryStats()
+				: CountriesStats;
+		List<CountrySummary> filteredCountriesStats = (country == null) ? CountriesStats
+				: CountriesStats.stream().filter(stats -> stats.getLocation().getCountry().equalsIgnoreCase(country))
 						.collect(Collectors.toList());
-		return filteredCoronaCountriesStats;
+		return filteredCountriesStats;
 	}
 
 	@GetMapping(value = { "/stats/states", "/stats/states/{state}" })
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	public List<CoronaStateStats> getCoronaStatesStats(@PathVariable(name = "state", required = false) String state) {
-		LOGGER.info("Inside getCoronaStatesStats()");
+	public List<StateSummary> getStateSummaryStats(@PathVariable(name = "state", required = false) String state) {
+		LOGGER.info("Inside getStateSummaryStats()");
 
-		List<CoronaStateStats> coronaStatesStats = coronaDataService.getCoronaDataResponse().getCoronaStatesStats();
-		coronaStatesStats = (coronaStatesStats == null) ? coronaDataService.fetchCoronaData().getCoronaStatesStats()
-				: coronaStatesStats;
-		List<CoronaStateStats> filteredCoronaStatesStats = (state == null) ? coronaStatesStats
-				: coronaStatesStats.stream().filter(stats -> stats.getLocation().getState().equalsIgnoreCase(state))
+		List<StateSummary> StatesStats = coronaDataService.getCoronaDataResponse().getStateSummaryStats();
+		StatesStats = (StatesStats == null) ? coronaDataService.fetchCoronaData().getStateSummaryStats() : StatesStats;
+		List<StateSummary> filteredStatesStats = (state == null) ? StatesStats
+				: StatesStats.stream().filter(stats -> stats.getLocation().getState().equalsIgnoreCase(state))
 						.collect(Collectors.toList());
-		return filteredCoronaStatesStats;
+		return filteredStatesStats;
 	}
 
 	@GetMapping("/growth/cases")
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	public List<CoronaCaseGrowth> getCoronaCaseGrowthStats() {
-		LOGGER.info("Inside getCoronaCaseGrowthStats()");
-		List<CoronaCaseGrowth> coronaCaseGrowthStats = coronaDataService.getCoronaDataResponse()
-				.getCoronaCaseGrowthStats();
-		return coronaCaseGrowthStats == null ? coronaDataService.fetchCoronaData().getCoronaCaseGrowthStats()
-				: coronaCaseGrowthStats;
+	public List<CasesGrowth> getCasesGrowthStats() {
+		LOGGER.info("Inside getCasesGrowthStats()");
+		List<CasesGrowth> CaseGrowthStats = coronaDataService.getCoronaDataResponse().getCasesGrowthStats();
+		return CaseGrowthStats == null ? coronaDataService.fetchCoronaData().getCasesGrowthStats() : CaseGrowthStats;
 	}
 
 	@GetMapping(value = { "/growth/cases/countries", "/growth/cases/countries/{country}" })
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	public List<CoronaCaseGrowthCountry> getCoronaCaseGrowthCountriesStats(
+	public List<CountryCasesGrowth> getCountryCasesGrowthStats(
 			@PathVariable(name = "country", required = false) String country) {
-		LOGGER.info("Inside getCoronaCaseGrowthCountryStats()");
-		List<CoronaCaseGrowthCountry> coronaCaseGrowthCountriesStats = coronaDataService.getCoronaDataResponse()
-				.getCoronaCaseGrowthCountriesStats();
-		coronaCaseGrowthCountriesStats = (coronaCaseGrowthCountriesStats == null)
-				? coronaDataService.fetchCoronaData().getCoronaCaseGrowthCountriesStats()
-				: coronaCaseGrowthCountriesStats;
+		LOGGER.info("Inside getCountryCasesGrowthStats()");
+		List<CountryCasesGrowth> caseGrowthCountriesStats = coronaDataService.getCoronaDataResponse()
+				.getCountryCasesGrowthStats();
+		caseGrowthCountriesStats = (caseGrowthCountriesStats == null)
+				? coronaDataService.fetchCoronaData().getCountryCasesGrowthStats()
+				: caseGrowthCountriesStats;
 
-		List<CoronaCaseGrowthCountry> filteredCoronaCaseGrowthCountriesStats = (country == null)
-				? coronaCaseGrowthCountriesStats
-				: coronaCaseGrowthCountriesStats.stream().filter(stats -> stats.getCountry().equalsIgnoreCase(country))
+		List<CountryCasesGrowth> filteredCaseGrowthCountriesStats = (country == null) ? caseGrowthCountriesStats
+				: caseGrowthCountriesStats.stream().filter(stats -> stats.getCountry().equalsIgnoreCase(country))
 						.collect(Collectors.toList());
-		return filteredCoronaCaseGrowthCountriesStats;
-	}
-
-	@GetMapping("/growth/factors")
-	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	public List<CoronaCaseGrowthFactor> getCoronaCaseGrowthFactorStats() {
-		LOGGER.info("Inside getCoronaCaseGrowthFactorStats()");
-		List<CoronaCaseGrowthFactor> coronaCaseGrowthFactorStats = coronaDataService.getCoronaDataResponse()
-				.getCoronaCaseGrowthFactorStats();
-		return coronaCaseGrowthFactorStats == null
-				? coronaDataService.fetchCoronaData().getCoronaCaseGrowthFactorStats()
-				: coronaCaseGrowthFactorStats;
+		return filteredCaseGrowthCountriesStats;
 	}
 
 	@GetMapping("/growth/deaths")
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	public List<CoronaDeathGrowth> getCoronaDeathGrowthStats() {
-		LOGGER.info("Inside getCoronaDeathGrowthStats()");
-		List<CoronaDeathGrowth> coronaDeathGrowthStats = coronaDataService.getCoronaDataResponse()
-				.getCoronaDeathGrowthStats();
-		return coronaDeathGrowthStats == null ? coronaDataService.fetchCoronaData().getCoronaDeathGrowthStats()
-				: coronaDeathGrowthStats;
+	public List<DeathsGrowth> getDeathsGrowthStats() {
+		LOGGER.info("Inside getDeathsGrowthStats()");
+		List<DeathsGrowth> deathGrowthStats = coronaDataService.getCoronaDataResponse().getDeathsGrowthStats();
+		return deathGrowthStats == null ? coronaDataService.fetchCoronaData().getDeathsGrowthStats() : deathGrowthStats;
 	}
 
 	@GetMapping(value = { "/growth/deaths/countries", "/growth/deaths/countries/{country}" })
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	public List<CoronaDeathGrowthCountry> getCoronaDeathGrowthCountriesStats(
+	public List<CountryDeathsGrowth> getCountryDeathsGrowthStats(
 			@PathVariable(name = "country", required = false) String country) {
-		LOGGER.info("Inside getCoronaDeathGrowthCountryStats()");
-		List<CoronaDeathGrowthCountry> coronaDeathGrowthCountriesStats = coronaDataService.getCoronaDataResponse()
-				.getCoronaDeathGrowthCountriesStats();
-		coronaDeathGrowthCountriesStats = (coronaDeathGrowthCountriesStats == null)
-				? coronaDataService.fetchCoronaData().getCoronaDeathGrowthCountriesStats()
-				: coronaDeathGrowthCountriesStats;
+		LOGGER.info("Inside getCountryDeathsGrowthStats()");
+		List<CountryDeathsGrowth> deathGrowthCountriesStats = coronaDataService.getCoronaDataResponse()
+				.getCountryDeathsGrowthStats();
+		deathGrowthCountriesStats = (deathGrowthCountriesStats == null)
+				? coronaDataService.fetchCoronaData().getCountryDeathsGrowthStats()
+				: deathGrowthCountriesStats;
 
-		List<CoronaDeathGrowthCountry> filteredCoronaDeathGrowthCountriesStats = (country == null)
-				? coronaDeathGrowthCountriesStats
-				: coronaDeathGrowthCountriesStats.stream().filter(stats -> stats.getCountry().equalsIgnoreCase(country))
+		List<CountryDeathsGrowth> filteredDeathGrowthCountriesStats = (country == null) ? deathGrowthCountriesStats
+				: deathGrowthCountriesStats.stream().filter(stats -> stats.getCountry().equalsIgnoreCase(country))
 						.collect(Collectors.toList());
-		return filteredCoronaDeathGrowthCountriesStats;
+		return filteredDeathGrowthCountriesStats;
 	}
 
 }

@@ -1,12 +1,14 @@
-package com.shadow.coronatracker.model;
+package com.shadow.coronatracker.model.summary;
 
-public class CoronaCountryStats {
+import com.shadow.coronatracker.model.Location;
+
+public class CountrySummary {
 
 	private Location location;
 	private int cases;
-	private int casesSinceYesterday;
+	private int newCases;
 	private int deaths;
-	private int deathsSinceYesterday;
+	private int newDeaths;
 	private double mortalityRate;
 	private int recoveries;
 	private double recoveryRate;
@@ -30,12 +32,12 @@ public class CoronaCountryStats {
 		this.cases = cases;
 	}
 
-	public int getCasesSinceYesterday() {
-		return casesSinceYesterday;
+	public int getNewCases() {
+		return newCases;
 	}
 
-	public void setCasesSinceYesterday(int casesSinceYesterday) {
-		this.casesSinceYesterday = casesSinceYesterday;
+	public void setNewCases(int newCases) {
+		this.newCases = newCases;
 	}
 
 	public int getDeaths() {
@@ -46,12 +48,12 @@ public class CoronaCountryStats {
 		this.deaths = deaths;
 	}
 
-	public int getDeathsSinceYesterday() {
-		return deathsSinceYesterday;
+	public int getNewDeaths() {
+		return newDeaths;
 	}
 
-	public void setDeathsSinceYesterday(int deathsSinceYesterday) {
-		this.deathsSinceYesterday = deathsSinceYesterday;
+	public void setNewDeaths(int newDeaths) {
+		this.newDeaths = newDeaths;
 	}
 
 	public double getMortalityRate() {
