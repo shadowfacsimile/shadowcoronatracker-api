@@ -20,9 +20,10 @@ public class CountryDeathsGrowthDataCreator implements DataCreator {
 	@Override
 	public void create(StatisticsCollection statsCollection, CoronaDataResponse coronaDataResponse) {
 
-		List<CountryDeathsGrowth> countryDeathsGrowthStats = new LinkedList<>();
 		Map<String, Integer> totalDeathsGrowthMap = new LinkedHashMap<>();
 		Map<String, Integer> totalNewDeathsGrowthMap = new LinkedHashMap<>();
+
+		List<CountryDeathsGrowth> countryDeathsGrowthStats = new LinkedList<>();
 
 		for (LocationDeaths locationDeaths : statsCollection.getLocationDeathsStats()) {
 			Predicate<CountryDeathsGrowth> countryFilter = stat -> locationDeaths.getLocation().getCountry()
@@ -30,11 +31,9 @@ public class CountryDeathsGrowthDataCreator implements DataCreator {
 			CountryDeathsGrowth countryDeathsGrowth = fetchCountryDeathsGrowthIfExists(countryDeathsGrowthStats,
 					countryFilter);
 			List<DeathsGrowth> deathsGrowthStats = fetchDeathsGrowthStatsIfExists(countryDeathsGrowth);
-			List<DeathsGrowth> updatedDeathsGrowthStats = createDeathsGrowth(deathsGrowthStats, locationDeaths,
+			List<DeathsGrowth> updatedDeathsGrowthStats = createOrUpdateDeathsGrowth(deathsGrowthStats, locationDeaths,
 					totalDeathsGrowthMap, totalNewDeathsGrowthMap);
-
-			countryDeathsGrowth.setCountry(locationDeaths.getLocation().getCountry());
-			countryDeathsGrowth.setDeathsGrowths(updatedDeathsGrowthStats);
+			countryDeathsGrowthMapper(locationDeaths, countryDeathsGrowth, updatedDeathsGrowthStats);
 			countryDeathsGrowthStats.add(countryDeathsGrowth);
 		}
 
@@ -43,7 +42,12 @@ public class CountryDeathsGrowthDataCreator implements DataCreator {
 
 		coronaDataResponse.setCountryDeathsGrowthStats(countryDeathsGrowthStats.stream().distinct()
 				.sorted(Comparator.comparing(CountryDeathsGrowth::getCountry)).collect(Collectors.toList()));
+	}
 
+	private void countryDeathsGrowthMapper(LocationDeaths locationDeaths, CountryDeathsGrowth countryDeathsGrowth,
+			List<DeathsGrowth> updatedDeathsGrowthStats) {
+		countryDeathsGrowth.setCountry(locationDeaths.getLocation().getCountry());
+		countryDeathsGrowth.setDeathsGrowths(updatedDeathsGrowthStats);
 	}
 
 	private List<DeathsGrowth> fetchDeathsGrowthStatsIfExists(CountryDeathsGrowth countryDeathsGrowth) {
@@ -56,8 +60,9 @@ public class CountryDeathsGrowthDataCreator implements DataCreator {
 		return countryDeathsGrowthStats.stream().filter(countryFilter).findFirst().orElse(new CountryDeathsGrowth());
 	}
 
-	private List<DeathsGrowth> createDeathsGrowth(List<DeathsGrowth> deathsGrowthStats, LocationDeaths locationDeaths,
-			Map<String, Integer> totalDeathsGrowthMap, Map<String, Integer> totalNewDeathsGrowthMap) {
+	private List<DeathsGrowth> createOrUpdateDeathsGrowth(List<DeathsGrowth> deathsGrowthStats,
+			LocationDeaths locationDeaths, Map<String, Integer> totalDeathsGrowthMap,
+			Map<String, Integer> totalNewDeathsGrowthMap) {
 
 		boolean doesDeathsGrowthExists = deathsGrowthStats.size() > 0;
 
@@ -65,9 +70,7 @@ public class CountryDeathsGrowthDataCreator implements DataCreator {
 			Predicate<DeathsGrowth> dateFilter = stat -> stat.getDate().equals(entry.getKey());
 			DeathsGrowth deathsGrowth = fetchDeathsGrowthIfExists(deathsGrowthStats, doesDeathsGrowthExists,
 					dateFilter);
-			deathsGrowth.setDate(entry.getKey());
-			deathsGrowth.setGrowth(fetchCummulativeDeathGrowth(entry, deathsGrowth));
-			deathsGrowth.setDelta(fetchCummulativeDeltaGrowth(locationDeaths, entry, deathsGrowth));
+			deathsGrowthMapper(locationDeaths, entry, deathsGrowth);
 			deathsGrowthStats.add(deathsGrowth);
 
 			createEntryInTotalDeathsGrowthMap(totalDeathsGrowthMap, entry);
@@ -75,6 +78,13 @@ public class CountryDeathsGrowthDataCreator implements DataCreator {
 		}
 
 		return deathsGrowthStats.stream().distinct().collect(Collectors.toList());
+	}
+
+	private void deathsGrowthMapper(LocationDeaths locationDeaths, Entry<String, Integer> entry,
+			DeathsGrowth deathsGrowth) {
+		deathsGrowth.setDate(entry.getKey());
+		deathsGrowth.setGrowth(fetchCummulativeDeathGrowth(entry, deathsGrowth));
+		deathsGrowth.setDelta(fetchCummulativeDeltaGrowth(locationDeaths, entry, deathsGrowth));
 	}
 
 	private void createEntryInTotalNewDeathsGrowthMap(LocationDeaths locationDeaths,

@@ -2,6 +2,7 @@ package com.shadow.coronatracker.util.datacreators;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -16,18 +17,18 @@ public class DeathsGrowthDataCreator implements DataCreator {
 
 		List<DeathsGrowth> deathGrowthStats = new LinkedList<>();
 
-		statsCollection.getTotalDeathsGrowthMap().entrySet().stream()
-				.forEach(entry -> deathGrowthMapper(statsCollection, deathGrowthStats, entry));
+		statsCollection.getTotalDeathsGrowthMap().entrySet().stream().forEach(
+				entry -> deathGrowthMapper(entry, deathGrowthStats, statsCollection.getTotalNewDeathsGrowthMap()));
 
 		coronaDataResponse.setDeathsGrowthStats(deathGrowthStats.stream().collect(Collectors.toList()));
 	}
 
-	private void deathGrowthMapper(StatisticsCollection statsCollection, List<DeathsGrowth> deathGrowthStats,
-			Entry<String, Integer> entry) {
+	private void deathGrowthMapper(Entry<String, Integer> entry, List<DeathsGrowth> deathGrowthStats,
+			Map<String, Integer> totalNewDeathsGrowthMap) {
 		DeathsGrowth deathsGrowth = new DeathsGrowth();
 		deathsGrowth.setDate(entry.getKey());
 		deathsGrowth.setGrowth(entry.getValue());
-		deathsGrowth.setDelta(statsCollection.getTotalNewDeathsGrowthMap().get(entry.getKey()));
+		deathsGrowth.setDelta(totalNewDeathsGrowthMap.get(entry.getKey()));
 		deathGrowthStats.add(deathsGrowth);
 	}
 

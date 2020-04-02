@@ -20,9 +20,10 @@ public class CountryCasesGrowthDataCreator implements DataCreator {
 	@Override
 	public void create(StatisticsCollection statsCollection, CoronaDataResponse coronaDataResponse) {
 
-		List<CountryCasesGrowth> countryCasesGrowthStats = new LinkedList<>();
 		Map<String, Integer> totalCasesGrowthMap = new LinkedHashMap<>();
 		Map<String, Integer> totalNewCasesGrowthMap = new LinkedHashMap<>();
+
+		List<CountryCasesGrowth> countryCasesGrowthStats = new LinkedList<>();
 
 		for (LocationCases locationCases : statsCollection.getLocationCasesStats()) {
 			Predicate<CountryCasesGrowth> countryFilter = stat -> locationCases.getLocation().getCountry()
@@ -30,11 +31,9 @@ public class CountryCasesGrowthDataCreator implements DataCreator {
 			CountryCasesGrowth countryCasesGrowth = fetchCountryCasesGrowthIfExists(countryCasesGrowthStats,
 					countryFilter);
 			List<CasesGrowth> casesGrowthStats = fetchCasesGrowthStatsIfExists(countryCasesGrowth);
-			List<CasesGrowth> updatedCasesGrowthStats = createCasesGrowth(casesGrowthStats, locationCases,
+			List<CasesGrowth> updatedCasesGrowthStats = createOrUpdateCasesGrowth(casesGrowthStats, locationCases,
 					totalCasesGrowthMap, totalNewCasesGrowthMap);
-
-			countryCasesGrowth.setCountry(locationCases.getLocation().getCountry());
-			countryCasesGrowth.setCasesGrowths(updatedCasesGrowthStats);
+			countryCasesGrowthMapper(locationCases, countryCasesGrowth, updatedCasesGrowthStats);
 			countryCasesGrowthStats.add(countryCasesGrowth);
 		}
 
@@ -43,7 +42,12 @@ public class CountryCasesGrowthDataCreator implements DataCreator {
 
 		coronaDataResponse.setCountryCasesGrowthStats(countryCasesGrowthStats.stream().distinct()
 				.sorted(Comparator.comparing(CountryCasesGrowth::getCountry)).collect(Collectors.toList()));
+	}
 
+	private void countryCasesGrowthMapper(LocationCases locationCases, CountryCasesGrowth countryCasesGrowth,
+			List<CasesGrowth> updatedCasesGrowthStats) {
+		countryCasesGrowth.setCountry(locationCases.getLocation().getCountry());
+		countryCasesGrowth.setCasesGrowths(updatedCasesGrowthStats);
 	}
 
 	private List<CasesGrowth> fetchCasesGrowthStatsIfExists(CountryCasesGrowth countryCasesGrowth) {
@@ -55,7 +59,7 @@ public class CountryCasesGrowthDataCreator implements DataCreator {
 		return countryCasesGrowthStats.stream().filter(countryFilter).findFirst().orElse(new CountryCasesGrowth());
 	}
 
-	private List<CasesGrowth> createCasesGrowth(List<CasesGrowth> casesGrowthStats, LocationCases locationCases,
+	private List<CasesGrowth> createOrUpdateCasesGrowth(List<CasesGrowth> casesGrowthStats, LocationCases locationCases,
 			Map<String, Integer> totalCasesGrowthMap, Map<String, Integer> totalNewCasesGrowthMap) {
 
 		boolean doesCasesGrowthExists = casesGrowthStats.size() > 0;
@@ -63,9 +67,7 @@ public class CountryCasesGrowthDataCreator implements DataCreator {
 		for (Entry<String, Integer> entry : locationCases.getCases().entrySet()) {
 			Predicate<CasesGrowth> dateFilter = stat -> stat.getDate().equals(entry.getKey());
 			CasesGrowth casesGrowth = fetchCasesGrowthIfExists(casesGrowthStats, doesCasesGrowthExists, dateFilter);
-			casesGrowth.setDate(entry.getKey());
-			casesGrowth.setGrowth(fetchCummulativeCaseGrowth(entry, casesGrowth));
-			casesGrowth.setDelta(fetchCummulativeDeltaGrowth(locationCases, entry, casesGrowth));
+			casesGrowthMapper(locationCases, entry, casesGrowth);
 			casesGrowthStats.add(casesGrowth);
 
 			createEntryInTotalCasesGrowthMap(totalCasesGrowthMap, entry);
@@ -73,6 +75,12 @@ public class CountryCasesGrowthDataCreator implements DataCreator {
 		}
 
 		return casesGrowthStats.stream().distinct().collect(Collectors.toList());
+	}
+
+	private void casesGrowthMapper(LocationCases locationCases, Entry<String, Integer> entry, CasesGrowth casesGrowth) {
+		casesGrowth.setDate(entry.getKey());
+		casesGrowth.setGrowth(fetchCummulativeCaseGrowth(entry, casesGrowth));
+		casesGrowth.setDelta(fetchCummulativeDeltaGrowth(locationCases, entry, casesGrowth));
 	}
 
 	private void createEntryInTotalNewCasesGrowthMap(LocationCases locationCases,
