@@ -8,6 +8,7 @@ import com.shadow.coronatracker.model.LocationDeaths;
 import com.shadow.coronatracker.model.StatisticsCollection;
 import com.shadow.coronatracker.model.response.CoronaDataResponse;
 import com.shadow.coronatracker.model.summary.Summary;
+import com.shadow.coronatracker.util.CoronaTrackerUtil;
 
 public class SummaryDataCreator implements DataCreator {
 
@@ -20,8 +21,8 @@ public class SummaryDataCreator implements DataCreator {
 		summary.setTotalDeaths(fetchTotalDeathsToday(statsCollection));
 		summary.setTotalNewDeaths(fetchTotalNewDeathsToday(statsCollection));
 		summary.setTotalRecoveries(fetchTotalRecoveriesToday(statsCollection));
-		summary.setMortalityRate(calculateMortalityRate(summary));
-		summary.setRecoveryRate(calculateRecoveryRate(summary));
+		summary.setMortalityRate(CoronaTrackerUtil.calculateRate(summary.getTotalCases(), summary.getTotalDeaths()));
+		summary.setRecoveryRate(CoronaTrackerUtil.calculateRate(summary.getTotalCases(), summary.getTotalRecoveries()));
 		summary.setCountriesWithFirstCase(fetchCountriesWithFirstCase(statsCollection));
 		summary.setCountriesWithFirstDeath(fetchCountriesWithFirstDeath(statsCollection));
 
@@ -61,14 +62,6 @@ public class SummaryDataCreator implements DataCreator {
 	private List<String> fetchCountriesWithFirstCase(StatisticsCollection statsCollection) {
 		return statsCollection.getLocationCasesStats().stream().filter(LocationCases::isFirstCase)
 				.map(stat -> stat.getLocation().getCountry()).sorted().distinct().collect(Collectors.toList());
-	}
-
-	private double calculateRecoveryRate(Summary summary) {
-		return summary.getTotalCases() == 0 ? 0 : (double) summary.getTotalRecoveries() / summary.getTotalCases();
-	}
-
-	private double calculateMortalityRate(Summary summary) {
-		return summary.getTotalCases() == 0 ? 0 : (double) summary.getTotalDeaths() / summary.getTotalCases();
 	}
 
 }

@@ -37,6 +37,7 @@ public class CoronaTrackerUtil {
 	}
 
 	public static int fetchLastNonblankRecordIndex(CSVRecord record) {
+		
 		int lastRecord = record.size() - 1;
 		return StringUtils.isBlank(record.get(lastRecord)) ? lastRecord - 1 : lastRecord;
 	}
@@ -61,5 +62,10 @@ public class CoronaTrackerUtil {
 		Predicate<String> countryHasMultipleEntries = country -> Collections.frequency(countries, country) > 1;
 
 		return countries.stream().filter(countryHasMultipleEntries).collect(Collectors.toList());
+	}
+
+	public static double calculateRate(int a, int b) {
+		
+		return a == 0 ? 0 : (double) b / a;
 	}
 }
