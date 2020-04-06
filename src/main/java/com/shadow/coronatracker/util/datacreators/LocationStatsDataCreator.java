@@ -75,10 +75,10 @@ public class LocationStatsDataCreator implements DataCreator {
 	private void createCountryLevelStats(StatisticsCollection statsCollection) {
 
 		List<CountrySummary> countrySummaryStats = new LinkedList<>();
+		List<StateSummary> stateSummaryStats = statsCollection.getStateSummaryStats();
 
-		statsCollection.getLocationCasesStats().stream()
-				.forEach(locationCases -> countrySummaryStatsMapper(locationCases, countrySummaryStats,
-						statsCollection.getStateSummaryStats()));
+		statsCollection.getLocationCasesStats().stream().forEach(
+				locationCases -> countrySummaryStatsMapper(locationCases, countrySummaryStats, stateSummaryStats));
 
 		statsCollection.setCountrySummaryStats(countrySummaryStats);
 	}
@@ -92,15 +92,15 @@ public class LocationStatsDataCreator implements DataCreator {
 		CountrySummary countrySummary = new CountrySummary();
 		countrySummary.setLocation(createLocation(locationCases, false));
 		countrySummary
-				.setCases(stateSummaryStats.stream().filter(locationFilter).mapToInt(stat -> stat.getCases()).sum());
+				.setCases(stateSummaryStats.stream().filter(locationFilter).mapToInt(StateSummary::getCases).sum());
 		countrySummary.setNewCases(
-				stateSummaryStats.stream().filter(locationFilter).mapToInt(stat -> stat.getNewCases()).sum());
+				stateSummaryStats.stream().filter(locationFilter).mapToInt(StateSummary::getNewCases).sum());
 		countrySummary
-				.setDeaths(stateSummaryStats.stream().filter(locationFilter).mapToInt(stat -> stat.getDeaths()).sum());
+				.setDeaths(stateSummaryStats.stream().filter(locationFilter).mapToInt(StateSummary::getDeaths).sum());
 		countrySummary.setNewDeaths(
-				stateSummaryStats.stream().filter(locationFilter).mapToInt(stat -> stat.getNewDeaths()).sum());
+				stateSummaryStats.stream().filter(locationFilter).mapToInt(StateSummary::getNewDeaths).sum());
 		countrySummary.setRecoveries(
-				stateSummaryStats.stream().filter(locationFilter).mapToInt(stat -> stat.getRecoveries()).sum());
+				stateSummaryStats.stream().filter(locationFilter).mapToInt(StateSummary::getRecoveries).sum());
 		countrySummary.setStatewiseDataExists(stateSummaryStats.stream().filter(locationFilter).count() > 1);
 		countrySummary.setMortalityRate(
 				CoronaTrackerUtil.calculateRate(countrySummary.getCases(), countrySummary.getDeaths()));
@@ -111,17 +111,21 @@ public class LocationStatsDataCreator implements DataCreator {
 
 	private LocationRecoveries fetchLocationRecoveriesForThisLocation(final StatisticsCollection statsCollection,
 			LocationCases locationCases) {
-		return statsCollection.getLocationRecoveriesStats().stream()
-				.filter(stats -> stats.getLocation().equals(locationCases.getLocation())).findFirst().orElse(null);
+		
+		Predicate<LocationRecoveries> locationFilter = stats -> stats.getLocation().equals(locationCases.getLocation());
+		return statsCollection.getLocationRecoveriesStats().stream().filter(locationFilter).findFirst().orElse(null);
 	}
 
 	private LocationDeaths fetchLocationDeathsForThisLocation(final StatisticsCollection statsCollection,
 			LocationCases locationCases) {
+		
+		Predicate<LocationDeaths> locationFilter = stats -> stats.getLocation().equals(locationCases.getLocation());
 		return statsCollection.getLocationDeathsStats().stream()
-				.filter(stats -> stats.getLocation().equals(locationCases.getLocation())).findFirst().orElse(null);
+				.filter(locationFilter).findFirst().orElse(null);
 	}
 
 	private Location createLocation(LocationCases locationCases, boolean isStateLevel) {
+		
 		Location location = new Location();
 		location.setCountry(locationCases.getLocation().getCountry());
 

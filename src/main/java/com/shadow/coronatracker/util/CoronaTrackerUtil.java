@@ -37,7 +37,7 @@ public class CoronaTrackerUtil {
 	}
 
 	public static int fetchLastNonblankRecordIndex(CSVRecord record) {
-		
+
 		int lastRecord = record.size() - 1;
 		return StringUtils.isBlank(record.get(lastRecord)) ? lastRecord - 1 : lastRecord;
 	}
@@ -47,12 +47,20 @@ public class CoronaTrackerUtil {
 		Map<String, Integer> map = new LinkedHashMap<>();
 
 		for (int i = 5; i < record.size(); i++) {
-			Integer value = isDelta ? Integer.valueOf(record.get(i)) - Integer.valueOf(record.get(i - 1))
-					: Integer.valueOf(record.get(i));
+			Integer curr = Integer.valueOf(record.get(i));
+			Integer prev = Integer.valueOf(record.get(i - 1));
+			Integer value = isDelta ? curr - prev : curr;
 			map.put(header.get(i), value);
 		}
 
 		return map;
+	}
+
+	public static boolean isThisFirstReportedItem(List<String> filterCountries, CSVRecord record, int lastRecord) {
+		String country = record.get(1);
+		String prev = record.get(lastRecord - 1);
+		String curr = record.get(lastRecord);
+		return !filterCountries.contains(country) && !curr.equals("0") && prev.equals("0");
 	}
 
 	public static List<String> fetchDuplicateCountries(List<CSVRecord> csvRecords) {
@@ -64,8 +72,8 @@ public class CoronaTrackerUtil {
 		return countries.stream().filter(countryHasMultipleEntries).collect(Collectors.toList());
 	}
 
-	public static double calculateRate(int a, int b) {
-		
-		return a == 0 ? 0 : (double) b / a;
+	public static double calculateRate(int numer, int deno) {
+
+		return deno == 0 ? 0 : (double) numer / deno;
 	}
 }

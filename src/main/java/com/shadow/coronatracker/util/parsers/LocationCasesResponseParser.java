@@ -36,13 +36,8 @@ public class LocationCasesResponseParser implements ResponseParser {
 		locationCases.setCases(CoronaTrackerUtil.createLocationStatsMap(header, record, false));
 		locationCases.setNewCases(CoronaTrackerUtil.createLocationStatsMap(header, record, true));
 		locationCases.setCurrDate(header.get(lastRecord));
-		locationCases.setFirstCase(isThisFirstReportedCase(filterCountries, record, lastRecord));
+		locationCases.setFirstCase(CoronaTrackerUtil.isThisFirstReportedItem(filterCountries, record, lastRecord));
 		return locationCases;
-	}
-
-	private boolean isThisFirstReportedCase(List<String> filterCountries, CSVRecord record, int lastRecord) {
-		return !filterCountries.contains(record.get(1)) && record.get(lastRecord - 1).equals("0")
-				&& !record.get(lastRecord).equals("0");
 	}
 
 	private Location createLocation(CSVRecord record) {
