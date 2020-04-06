@@ -26,10 +26,9 @@ public class CountryDeathsGrowthDataCreator implements DataCreator {
 		List<CountryDeathsGrowth> countryDeathsGrowthStats = new LinkedList<>();
 
 		for (LocationDeaths locationDeaths : statsCollection.getLocationDeathsStats()) {
-			Predicate<CountryDeathsGrowth> countryFilter = stat -> locationDeaths.getLocation().getCountry()
-					.equals(stat.getCountry());
-			CountryDeathsGrowth countryDeathsGrowth = fetchCountryDeathsGrowthIfExists(countryDeathsGrowthStats,
-					countryFilter);
+			String country = locationDeaths.getLocation().getCountry();
+			CountryDeathsGrowth countryDeathsGrowth = fetchCountryDeathsGrowthIfExists(country,
+					countryDeathsGrowthStats);
 			List<DeathsGrowth> deathsGrowthStats = fetchDeathsGrowthStatsIfExists(countryDeathsGrowth);
 			List<DeathsGrowth> updatedDeathsGrowthStats = createOrUpdateDeathsGrowth(deathsGrowthStats, locationDeaths,
 					totalDeathsGrowthMap, totalNewDeathsGrowthMap);
@@ -55,8 +54,9 @@ public class CountryDeathsGrowthDataCreator implements DataCreator {
 				: countryDeathsGrowth.getDeathsGrowths();
 	}
 
-	private CountryDeathsGrowth fetchCountryDeathsGrowthIfExists(List<CountryDeathsGrowth> countryDeathsGrowthStats,
-			Predicate<CountryDeathsGrowth> countryFilter) {
+	private CountryDeathsGrowth fetchCountryDeathsGrowthIfExists(String country,
+			List<CountryDeathsGrowth> countryDeathsGrowthStats) {
+		Predicate<CountryDeathsGrowth> countryFilter = stat -> country.equals(stat.getCountry());
 		return countryDeathsGrowthStats.stream().filter(countryFilter).findFirst().orElse(new CountryDeathsGrowth());
 	}
 
@@ -67,53 +67,52 @@ public class CountryDeathsGrowthDataCreator implements DataCreator {
 		boolean doesDeathsGrowthExists = deathsGrowthStats.size() > 0;
 
 		for (Entry<String, Integer> entry : locationDeaths.getDeaths().entrySet()) {
-			Predicate<DeathsGrowth> dateFilter = stat -> stat.getDate().equals(entry.getKey());
-			DeathsGrowth deathsGrowth = fetchDeathsGrowthIfExists(deathsGrowthStats, doesDeathsGrowthExists,
-					dateFilter);
-			deathsGrowthMapper(locationDeaths, entry, deathsGrowth);
+			String date = entry.getKey();
+			Integer deaths = entry.getValue();
+			Integer newDeaths = locationDeaths.getNewDeaths().get(date);
+
+			DeathsGrowth deathsGrowth = fetchDeathsGrowthIfExists(deathsGrowthStats, doesDeathsGrowthExists, date);
+			deathsGrowthMapper(date, deaths, newDeaths, deathsGrowth);
 			deathsGrowthStats.add(deathsGrowth);
 
-			createEntryInTotalDeathsGrowthMap(totalDeathsGrowthMap, entry);
-			createEntryInTotalNewDeathsGrowthMap(locationDeaths, totalNewDeathsGrowthMap, entry);
+			createEntryInTotalDeathsGrowthMap(date, deaths, totalDeathsGrowthMap);
+			createEntryInTotalNewDeathsGrowthMap(date, newDeaths, totalNewDeathsGrowthMap);
 		}
 
 		return deathsGrowthStats.stream().distinct().collect(Collectors.toList());
 	}
 
-	private void deathsGrowthMapper(LocationDeaths locationDeaths, Entry<String, Integer> entry,
-			DeathsGrowth deathsGrowth) {
-		deathsGrowth.setDate(entry.getKey());
-		deathsGrowth.setGrowth(fetchCummulativeDeathGrowth(entry, deathsGrowth));
-		deathsGrowth.setDelta(fetchCummulativeDeltaGrowth(locationDeaths, entry, deathsGrowth));
-	}
-
-	private void createEntryInTotalNewDeathsGrowthMap(LocationDeaths locationDeaths,
-			Map<String, Integer> totalNewDeathsGrowthMap, Entry<String, Integer> entry) {
-		totalNewDeathsGrowthMap.put(entry.getKey(), totalNewDeathsGrowthMap.get(entry.getKey()) == null
-				? locationDeaths.getNewDeaths().get(entry.getKey())
-				: totalNewDeathsGrowthMap.get(entry.getKey()) + locationDeaths.getNewDeaths().get(entry.getKey()));
-	}
-
-	private void createEntryInTotalDeathsGrowthMap(Map<String, Integer> totalDeathsGrowthMap,
-			Entry<String, Integer> entry) {
-		totalDeathsGrowthMap.put(entry.getKey(), totalDeathsGrowthMap.get(entry.getKey()) == null ? entry.getValue()
-				: totalDeathsGrowthMap.get(entry.getKey()) + entry.getValue());
-	}
-
-	private int fetchCummulativeDeltaGrowth(LocationDeaths locationDeaths, Entry<String, Integer> entry,
-			DeathsGrowth deathsGrowth) {
-		return deathsGrowth.getDelta() == null ? locationDeaths.getNewDeaths().get(entry.getKey())
-				: deathsGrowth.getDelta() + locationDeaths.getNewDeaths().get(entry.getKey());
-	}
-
-	private int fetchCummulativeDeathGrowth(Entry<String, Integer> entry, DeathsGrowth deathsGrowth) {
-		return deathsGrowth.getGrowth() == null ? entry.getValue() : deathsGrowth.getGrowth() + entry.getValue();
+	private void deathsGrowthMapper(String date, Integer deaths, Integer newDeaths, DeathsGrowth deathsGrowth) {
+		deathsGrowth.setDate(date);
+		deathsGrowth.setGrowth(fetchCummulativeDeathGrowth(deaths, deathsGrowth));
+		deathsGrowth.setDelta(fetchCummulativeDeltaGrowth(newDeaths, deathsGrowth));
 	}
 
 	private DeathsGrowth fetchDeathsGrowthIfExists(List<DeathsGrowth> deathsGrowthStats, boolean doesDeathsGrowthExists,
-			Predicate<DeathsGrowth> dateFilter) {
+			String date) {
+		Predicate<DeathsGrowth> dateFilter = stat -> stat.getDate().equals(date);
 		return doesDeathsGrowthExists ? deathsGrowthStats.stream().filter(dateFilter).findFirst().get()
 				: new DeathsGrowth();
+	}
+
+	private int fetchCummulativeDeathGrowth(Integer accumulatedDeaths, DeathsGrowth deathsGrowth) {
+		return deathsGrowth.getGrowth() == null ? accumulatedDeaths : accumulatedDeaths + deathsGrowth.getGrowth();
+	}
+
+	private int fetchCummulativeDeltaGrowth(Integer accumulatedDelta, DeathsGrowth deathsGrowth) {
+		return deathsGrowth.getDelta() == null ? accumulatedDelta : accumulatedDelta + deathsGrowth.getDelta();
+	}
+
+	private void createEntryInTotalDeathsGrowthMap(String date, Integer deaths,
+			Map<String, Integer> totalDeathsGrowthMap) {
+		Integer accumulatedDeaths = totalDeathsGrowthMap.get(date);
+		totalDeathsGrowthMap.put(date, accumulatedDeaths == null ? deaths : accumulatedDeaths + deaths);
+	}
+
+	private void createEntryInTotalNewDeathsGrowthMap(String date, Integer newDeaths,
+			Map<String, Integer> totalNewDeathsGrowthMap) {
+		Integer accumulatedNewDeaths = totalNewDeathsGrowthMap.get(date);
+		totalNewDeathsGrowthMap.put(date, accumulatedNewDeaths == null ? newDeaths : accumulatedNewDeaths + newDeaths);
 	}
 
 }

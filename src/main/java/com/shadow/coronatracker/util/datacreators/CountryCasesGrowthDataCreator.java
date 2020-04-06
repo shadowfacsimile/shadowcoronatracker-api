@@ -26,10 +26,9 @@ public class CountryCasesGrowthDataCreator implements DataCreator {
 		List<CountryCasesGrowth> countryCasesGrowthStats = new LinkedList<>();
 
 		for (LocationCases locationCases : statsCollection.getLocationCasesStats()) {
-			Predicate<CountryCasesGrowth> countryFilter = stat -> locationCases.getLocation().getCountry()
-					.equals(stat.getCountry());
-			CountryCasesGrowth countryCasesGrowth = fetchCountryCasesGrowthIfExists(countryCasesGrowthStats,
-					countryFilter);
+			String country = locationCases.getLocation().getCountry();
+			CountryCasesGrowth countryCasesGrowth = fetchCountryCasesGrowthIfExists(country,
+					countryCasesGrowthStats);
 			List<CasesGrowth> casesGrowthStats = fetchCasesGrowthStatsIfExists(countryCasesGrowth);
 			List<CasesGrowth> updatedCasesGrowthStats = createOrUpdateCasesGrowth(casesGrowthStats, locationCases,
 					totalCasesGrowthMap, totalNewCasesGrowthMap);
@@ -51,65 +50,69 @@ public class CountryCasesGrowthDataCreator implements DataCreator {
 	}
 
 	private List<CasesGrowth> fetchCasesGrowthStatsIfExists(CountryCasesGrowth countryCasesGrowth) {
-		return countryCasesGrowth.getCasesGrowths() == null ? new LinkedList<>() : countryCasesGrowth.getCasesGrowths();
+		return countryCasesGrowth.getCasesGrowths() == null ? new LinkedList<>()
+				: countryCasesGrowth.getCasesGrowths();
 	}
 
-	private CountryCasesGrowth fetchCountryCasesGrowthIfExists(List<CountryCasesGrowth> countryCasesGrowthStats,
-			Predicate<CountryCasesGrowth> countryFilter) {
+	private CountryCasesGrowth fetchCountryCasesGrowthIfExists(String country,
+			List<CountryCasesGrowth> countryCasesGrowthStats) {
+		Predicate<CountryCasesGrowth> countryFilter = stat -> country.equals(stat.getCountry());
 		return countryCasesGrowthStats.stream().filter(countryFilter).findFirst().orElse(new CountryCasesGrowth());
 	}
 
-	private List<CasesGrowth> createOrUpdateCasesGrowth(List<CasesGrowth> casesGrowthStats, LocationCases locationCases,
-			Map<String, Integer> totalCasesGrowthMap, Map<String, Integer> totalNewCasesGrowthMap) {
+	private List<CasesGrowth> createOrUpdateCasesGrowth(List<CasesGrowth> casesGrowthStats,
+			LocationCases locationCases, Map<String, Integer> totalCasesGrowthMap,
+			Map<String, Integer> totalNewCasesGrowthMap) {
 
 		boolean doesCasesGrowthExists = casesGrowthStats.size() > 0;
 
 		for (Entry<String, Integer> entry : locationCases.getCases().entrySet()) {
-			Predicate<CasesGrowth> dateFilter = stat -> stat.getDate().equals(entry.getKey());
-			CasesGrowth casesGrowth = fetchCasesGrowthIfExists(casesGrowthStats, doesCasesGrowthExists, dateFilter);
-			casesGrowthMapper(locationCases, entry, casesGrowth);
+			String date = entry.getKey();
+			Integer cases = entry.getValue();
+			Integer newCases = locationCases.getNewCases().get(date);
+
+			CasesGrowth casesGrowth = fetchCasesGrowthIfExists(casesGrowthStats, doesCasesGrowthExists, date);
+			casesGrowthMapper(date, cases, newCases, casesGrowth);
 			casesGrowthStats.add(casesGrowth);
 
-			createEntryInTotalCasesGrowthMap(totalCasesGrowthMap, entry);
-			createEntryInTotalNewCasesGrowthMap(locationCases, totalNewCasesGrowthMap, entry);
+			createEntryInTotalCasesGrowthMap(date, cases, totalCasesGrowthMap);
+			createEntryInTotalNewCasesGrowthMap(date, newCases, totalNewCasesGrowthMap);
 		}
 
 		return casesGrowthStats.stream().distinct().collect(Collectors.toList());
 	}
 
-	private void casesGrowthMapper(LocationCases locationCases, Entry<String, Integer> entry, CasesGrowth casesGrowth) {
-		casesGrowth.setDate(entry.getKey());
-		casesGrowth.setGrowth(fetchCummulativeCaseGrowth(entry, casesGrowth));
-		casesGrowth.setDelta(fetchCummulativeDeltaGrowth(locationCases, entry, casesGrowth));
-	}
-
-	private void createEntryInTotalNewCasesGrowthMap(LocationCases locationCases,
-			Map<String, Integer> totalNewCasesGrowthMap, Entry<String, Integer> entry) {
-		totalNewCasesGrowthMap.put(entry.getKey(),
-				totalNewCasesGrowthMap.get(entry.getKey()) == null ? locationCases.getNewCases().get(entry.getKey())
-						: totalNewCasesGrowthMap.get(entry.getKey()) + locationCases.getNewCases().get(entry.getKey()));
-	}
-
-	private void createEntryInTotalCasesGrowthMap(Map<String, Integer> totalCasesGrowthMap,
-			Entry<String, Integer> entry) {
-		totalCasesGrowthMap.put(entry.getKey(), totalCasesGrowthMap.get(entry.getKey()) == null ? entry.getValue()
-				: totalCasesGrowthMap.get(entry.getKey()) + entry.getValue());
-	}
-
-	private int fetchCummulativeDeltaGrowth(LocationCases locationCases, Entry<String, Integer> entry,
-			CasesGrowth casesGrowth) {
-		return casesGrowth.getDelta() == null ? locationCases.getNewCases().get(entry.getKey())
-				: casesGrowth.getDelta() + locationCases.getNewCases().get(entry.getKey());
-	}
-
-	private int fetchCummulativeCaseGrowth(Entry<String, Integer> entry, CasesGrowth casesGrowth) {
-		return casesGrowth.getGrowth() == null ? entry.getValue() : casesGrowth.getGrowth() + entry.getValue();
+	private void casesGrowthMapper(String date, Integer cases, Integer newCases, CasesGrowth casesGrowth) {
+		casesGrowth.setDate(date);
+		casesGrowth.setGrowth(fetchCummulativeCaseGrowth(cases, casesGrowth));
+		casesGrowth.setDelta(fetchCummulativeDeltaGrowth(newCases, casesGrowth));
 	}
 
 	private CasesGrowth fetchCasesGrowthIfExists(List<CasesGrowth> casesGrowthStats, boolean doesCasesGrowthExists,
-			Predicate<CasesGrowth> dateFilter) {
+			String date) {
+		Predicate<CasesGrowth> dateFilter = stat -> stat.getDate().equals(date);
 		return doesCasesGrowthExists ? casesGrowthStats.stream().filter(dateFilter).findFirst().get()
 				: new CasesGrowth();
+	}
+
+	private int fetchCummulativeCaseGrowth(Integer accumulatedCases, CasesGrowth casesGrowth) {
+		return casesGrowth.getGrowth() == null ? accumulatedCases : accumulatedCases + casesGrowth.getGrowth();
+	}
+
+	private int fetchCummulativeDeltaGrowth(Integer accumulatedDelta, CasesGrowth casesGrowth) {
+		return casesGrowth.getDelta() == null ? accumulatedDelta : accumulatedDelta + casesGrowth.getDelta();
+	}
+
+	private void createEntryInTotalCasesGrowthMap(String date, Integer cases,
+			Map<String, Integer> totalCasesGrowthMap) {
+		Integer accumulatedCases = totalCasesGrowthMap.get(date);
+		totalCasesGrowthMap.put(date, accumulatedCases == null ? cases : accumulatedCases + cases);
+	}
+
+	private void createEntryInTotalNewCasesGrowthMap(String date, Integer newCases,
+			Map<String, Integer> totalNewCasesGrowthMap) {
+		Integer accumulatedNewCases = totalNewCasesGrowthMap.get(date);
+		totalNewCasesGrowthMap.put(date, accumulatedNewCases == null ? newCases : accumulatedNewCases + newCases);
 	}
 
 }
