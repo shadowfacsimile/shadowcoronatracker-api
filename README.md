@@ -4,6 +4,7 @@ To lauch the application -
 mvn clean install liberty:run-server
 
 List of API:
+
 / Summary stats overall, country level and state level -
   http://localhost:9080/ShadowCoronaTracker/api/stats/summary/
   http://localhost:9080/ShadowCoronaTracker/api/stats/countries/{country}
