@@ -21,8 +21,8 @@ public class SummaryDataCreator implements DataCreator {
 		summary.setTotalDeaths(fetchTotalDeathsToday(statsCollection));
 		summary.setTotalNewDeaths(fetchTotalNewDeathsToday(statsCollection));
 		summary.setTotalRecoveries(fetchTotalRecoveriesToday(statsCollection));
-		summary.setMortalityRate(CoronaTrackerUtil.calculateRate(summary.getTotalCases(), summary.getTotalDeaths()));
-		summary.setRecoveryRate(CoronaTrackerUtil.calculateRate(summary.getTotalCases(), summary.getTotalRecoveries()));
+		summary.setMortalityRate(CoronaTrackerUtil.calculateRate(summary.getTotalDeaths(), summary.getTotalCases()));
+		summary.setRecoveryRate(CoronaTrackerUtil.calculateRate(summary.getTotalRecoveries(), summary.getTotalCases()));
 		summary.setCountriesWithFirstCase(fetchCountriesWithFirstCase(statsCollection));
 		summary.setCountriesWithFirstDeath(fetchCountriesWithFirstDeath(statsCollection));
 
