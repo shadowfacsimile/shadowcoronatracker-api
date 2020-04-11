@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import com.shadow.coronatracker.model.StatisticsCollection;
@@ -30,6 +32,12 @@ public class CoronaDataService {
 	@Autowired
 	private CoronaDataResponse coronaDataResponse;
 
+	@Autowired
+	private ResourceLoader resourceLoader;
+
+	/*
+	 * Get the CoronaDataResponse
+	 */
 	public CoronaDataResponse getCoronaDataResponse() {
 		return coronaDataResponse;
 	}
@@ -51,8 +59,11 @@ public class CoronaDataService {
 
 			try {
 				HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-				Files.write(Paths.get("src/main/resources/coronafiles/Corona_" + statistics.name() + ".csv"), response.body().getBytes(),
-						StandardOpenOption.CREATE);
+				Resource resource = resourceLoader
+						.getResource("classpath:coronafiles/Corona_" + statistics.name() + ".csv");
+
+				Files.write(Paths.get(resource.getURI()), response.body().getBytes(), StandardOpenOption.CREATE);
+
 				LOGGER.info(statistics.name() + " / Response code: " + response.statusCode());
 			} catch (IOException | InterruptedException e) {
 				LOGGER.severe("Error in processing data : " + e.getMessage());
@@ -87,8 +98,9 @@ public class CoronaDataService {
 		StatisticsCollection statisticsCollection = new StatisticsCollection();
 
 		for (Statistics statistics : Statistics.values()) {
-			String filePath = "src/main/resources/coronafiles/Corona_" + statistics.name() + ".csv";
-			String content = readFile(filePath);
+			Resource resource = resourceLoader
+					.getResource("classpath:coronafiles/Corona_" + statistics.name() + ".csv");
+			String content = readFile(resource);
 			statistics.getParsers().stream().forEach(parser -> parser.parse(statistics,
 					CoronaTrackerUtil.convertResponseToCSVRecord(content), statisticsCollection));
 		}
@@ -99,10 +111,10 @@ public class CoronaDataService {
 	/*
 	 * Read contents of local CSV files.
 	 */
-	private static String readFile(String filePath) {
+	private static String readFile(final Resource resource) {
 		StringBuilder contentBuilder = new StringBuilder();
 
-		try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
+		try (Stream<String> stream = Files.lines(Paths.get(resource.getURI()), StandardCharsets.UTF_8)) {
 			stream.forEach(s -> contentBuilder.append(s).append("\n"));
 		} catch (IOException e) {
 			LOGGER.severe("Error in processing data : " + e.getMessage());
