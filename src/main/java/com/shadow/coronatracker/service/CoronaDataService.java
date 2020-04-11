@@ -51,7 +51,7 @@ public class CoronaDataService {
 
 			try {
 				HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-				Files.write(Paths.get("Corona_" + statistics.name() + ".csv"), response.body().getBytes(),
+				Files.write(Paths.get("src/main/resources/coronafiles/Corona_" + statistics.name() + ".csv"), response.body().getBytes(),
 						StandardOpenOption.CREATE);
 				LOGGER.info(statistics.name() + " / Response code: " + response.statusCode());
 			} catch (IOException | InterruptedException e) {
@@ -87,7 +87,7 @@ public class CoronaDataService {
 		StatisticsCollection statisticsCollection = new StatisticsCollection();
 
 		for (Statistics statistics : Statistics.values()) {
-			String filePath = "Corona_" + statistics.name() + ".csv";
+			String filePath = "src/main/resources/coronafiles/Corona_" + statistics.name() + ".csv";
 			String content = readFile(filePath);
 			statistics.getParsers().stream().forEach(parser -> parser.parse(statistics,
 					CoronaTrackerUtil.convertResponseToCSVRecord(content), statisticsCollection));
