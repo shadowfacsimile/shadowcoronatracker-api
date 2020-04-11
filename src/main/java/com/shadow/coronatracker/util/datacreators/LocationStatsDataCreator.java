@@ -54,9 +54,9 @@ public class LocationStatsDataCreator implements DataCreator {
 		stateSummary.setNewDeaths(fetchLocationNewDeathsOfToday(locationCases, locationDeaths));
 		stateSummary.setRecoveries(fetchLocationRecoveriesOfToday(locationCases, locationRecoveries));
 		stateSummary
-				.setMortalityRate(CoronaTrackerUtil.calculateRate(stateSummary.getCases(), stateSummary.getDeaths()));
+				.setMortalityRate(CoronaTrackerUtil.calculateRate(stateSummary.getDeaths(), stateSummary.getCases()));
 		stateSummary.setRecoveryRate(
-				CoronaTrackerUtil.calculateRate(stateSummary.getCases(), stateSummary.getRecoveries()));
+				CoronaTrackerUtil.calculateRate(stateSummary.getRecoveries(), stateSummary.getCases()));
 		stateSummaryStats.add(stateSummary);
 	}
 
@@ -103,9 +103,9 @@ public class LocationStatsDataCreator implements DataCreator {
 				stateSummaryStats.stream().filter(locationFilter).mapToInt(StateSummary::getRecoveries).sum());
 		countrySummary.setStatewiseDataExists(stateSummaryStats.stream().filter(locationFilter).count() > 1);
 		countrySummary.setMortalityRate(
-				CoronaTrackerUtil.calculateRate(countrySummary.getCases(), countrySummary.getDeaths()));
+				CoronaTrackerUtil.calculateRate(countrySummary.getDeaths(), countrySummary.getCases()));
 		countrySummary.setRecoveryRate(
-				CoronaTrackerUtil.calculateRate(countrySummary.getCases(), countrySummary.getRecoveries()));
+				CoronaTrackerUtil.calculateRate(countrySummary.getRecoveries(), countrySummary.getCases()));
 		countrySummaryStats.add(countrySummary);
 	}
 

@@ -2,7 +2,6 @@ package com.shadow.coronatracker.util;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.http.HttpResponse;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,8 +19,8 @@ public class CoronaTrackerUtil {
 
 	private static final Logger LOGGER = Logger.getLogger(CoronaTrackerUtil.class.getName());
 
-	public static List<CSVRecord> convertResponseToCSVRecord(final HttpResponse<String> response) {
-		StringReader reader = new StringReader(response.body());
+	public static List<CSVRecord> convertResponseToCSVRecord(final String content) {
+		StringReader reader = new StringReader(content);
 
 		List<CSVRecord> csvRecords = null;
 		Iterable<CSVRecord> records = null;

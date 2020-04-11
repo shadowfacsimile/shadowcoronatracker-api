@@ -16,7 +16,7 @@ public class CoronaDataScheduler {
 	@Autowired
 	private CoronaDataService coronaDataService;
 
-	@Scheduled(cron = "0 0/15 * * * ?")
+	@Scheduled(cron = "0 0 0/1 * * ?")
 	public void syncCoronaData() {
 		LOGGER.info(
 				"***** Inside CoronaDataScheduler.syncCoronaData() / Fetching Data From Johns Hopkins CSSE Repo *****");

@@ -12,8 +12,12 @@ public enum Statistics {
 
 	CASES("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
 			Arrays.asList(new LocationCasesResponseParser())),
+	//US_CASES("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv",
+			//Arrays.asList(new USCasesResponseParser())),
 	DEATHS("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv",
 			Arrays.asList(new LocationDeathsResponseParser())),
+	//US_DEATHS("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv",
+			//Arrays.asList(new USDeathsResponseParser())),
 	RECOVERIES(
 			"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv",
 			Arrays.asList(new LocationRecoveriesResponseParser()));
