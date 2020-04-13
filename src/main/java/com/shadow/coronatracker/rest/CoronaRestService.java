@@ -36,7 +36,7 @@ public class CoronaRestService {
 
 		Summary summaryStats = coronaDataService.getCoronaDataResponse().getSummaryStats();
 
-		return summaryStats == null ? coronaDataService.fetchCoronaData().getSummaryStats() : summaryStats;
+		return summaryStats == null ? coronaDataService.fetchCoronaDataFromJHCSSE().getSummaryStats() : summaryStats;
 	}
 
 	@GetMapping(value = { "/stats/countries", "/stats/countries/{country}" })
@@ -47,7 +47,7 @@ public class CoronaRestService {
 
 		List<CountrySummary> countriesStats = coronaDataService.getCoronaDataResponse().getCountrySummaryStats();
 
-		return (countriesStats == null) ? coronaDataService.fetchCoronaData().getCountrySummaryStats()
+		return (countriesStats == null) ? coronaDataService.fetchCoronaDataFromJHCSSE().getCountrySummaryStats()
 				: (country == null) ? countriesStats
 						: countriesStats.stream()
 								.filter(stats -> stats.getLocation().getCountry().equalsIgnoreCase(country))
@@ -61,7 +61,7 @@ public class CoronaRestService {
 
 		List<StateSummary> statesStats = coronaDataService.getCoronaDataResponse().getStateSummaryStats();
 
-		return (statesStats == null) ? coronaDataService.fetchCoronaData().getStateSummaryStats()
+		return (statesStats == null) ? coronaDataService.fetchCoronaDataFromJHCSSE().getStateSummaryStats()
 				: (state == null) ? statesStats
 						: statesStats.stream().filter(stats -> stats.getLocation().getState().equalsIgnoreCase(state))
 								.collect(Collectors.toList());
@@ -74,7 +74,7 @@ public class CoronaRestService {
 
 		List<CasesGrowth> caseGrowthStats = coronaDataService.getCoronaDataResponse().getCasesGrowthStats();
 
-		return caseGrowthStats == null ? coronaDataService.fetchCoronaData().getCasesGrowthStats()
+		return caseGrowthStats == null ? coronaDataService.fetchCoronaDataFromJHCSSE().getCasesGrowthStats()
 				: caseGrowthStats;
 	}
 
@@ -88,7 +88,7 @@ public class CoronaRestService {
 				.getCountryCasesGrowthStats();
 
 		return (caseGrowthCountriesStats == null)
-				? coronaDataService.fetchCoronaData().getCountryCasesGrowthStats()
+				? coronaDataService.fetchCoronaDataFromJHCSSE().getCountryCasesGrowthStats()
 				: (country == null) ? caseGrowthCountriesStats
 						: caseGrowthCountriesStats.stream()
 								.filter(stats -> stats.getCountry().equalsIgnoreCase(country))
@@ -102,7 +102,7 @@ public class CoronaRestService {
 
 		List<DeathsGrowth> deathGrowthStats = coronaDataService.getCoronaDataResponse().getDeathsGrowthStats();
 
-		return deathGrowthStats == null ? coronaDataService.fetchCoronaData().getDeathsGrowthStats()
+		return deathGrowthStats == null ? coronaDataService.fetchCoronaDataFromJHCSSE().getDeathsGrowthStats()
 				: deathGrowthStats;
 	}
 
@@ -116,7 +116,7 @@ public class CoronaRestService {
 				.getCountryDeathsGrowthStats();
 
 		return (deathGrowthCountriesStats == null)
-				? coronaDataService.fetchCoronaData().getCountryDeathsGrowthStats()
+				? coronaDataService.fetchCoronaDataFromJHCSSE().getCountryDeathsGrowthStats()
 				: (country == null) ? deathGrowthCountriesStats
 						: deathGrowthCountriesStats.stream()
 								.filter(stats -> stats.getCountry().equalsIgnoreCase(country))
