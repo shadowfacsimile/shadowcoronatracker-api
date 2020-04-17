@@ -63,8 +63,7 @@ public class CoronaDataService {
 
 			try {
 				HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-				statistics.getParsers().stream().forEach(parser -> parser.parse(statistics,
-						CoronaTrackerUtil.convertResponseToCSVRecord(response), statisticsCollection));
+				statistics.getParser().parse(statistics, response, statisticsCollection);
 				LOGGER.info(statistics.name() + " / Response code: " + response.statusCode());
 			} catch (IOException | InterruptedException e) {
 				LOGGER.severe("Error in processing data : " + e.getMessage());

@@ -18,6 +18,7 @@ public class StatisticsCollection {
 	private Map<String, Integer> totalNewCasesGrowthMap;
 	private Map<String, Integer> totalDeathsGrowthMap;
 	private Map<String, Integer> totalNewDeathsGrowthMap;
+	private IndiaStats indiaStats;
 
 	public List<LocationCases> getLocationCasesStats() {
 		return locationCasesStats;
@@ -99,4 +100,11 @@ public class StatisticsCollection {
 		this.totalNewDeathsGrowthMap = totalNewDeathsGrowthMap;
 	}
 
+	public IndiaStats getIndiaStats() {
+		return indiaStats;
+	}
+
+	public void setIndiaStats(IndiaStats indiaStats) {
+		this.indiaStats = indiaStats;
+	}
 }

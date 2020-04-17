@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shadow.coronatracker.model.IndiaStats;
 import com.shadow.coronatracker.model.casegrowth.CasesGrowth;
 import com.shadow.coronatracker.model.casegrowth.CountryCasesGrowth;
 import com.shadow.coronatracker.model.deathgrowth.CountryDeathsGrowth;
@@ -37,6 +38,16 @@ public class CoronaRestService {
 		Summary summaryStats = coronaDataService.getCoronaDataResponse().getSummaryStats();
 
 		return summaryStats == null ? coronaDataService.fetchCoronaDataFromJHCSSE().getSummaryStats() : summaryStats;
+	}
+
+	@GetMapping("/stats/indiastats")
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	public IndiaStats getIndiaStats() {
+		LOGGER.info("Inside getSummaryStats()");
+
+		IndiaStats indiaStats = coronaDataService.getCoronaDataResponse().getIndiaStats();
+
+		return indiaStats == null ? coronaDataService.fetchCoronaDataFromJHCSSE().getIndiaStats() : indiaStats;
 	}
 
 	@GetMapping(value = { "/stats/countries", "/stats/countries/{country}" })

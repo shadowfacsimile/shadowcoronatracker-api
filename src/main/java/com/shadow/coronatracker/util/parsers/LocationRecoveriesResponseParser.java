@@ -1,5 +1,6 @@
 package com.shadow.coronatracker.util.parsers;
 
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,9 @@ import com.shadow.coronatracker.util.CoronaTrackerUtil;
 public class LocationRecoveriesResponseParser implements ResponseParser {
 
 	@Override
-	public void parse(Statistics statistics, List<CSVRecord> csvRecords, StatisticsCollection statsCollection) {
+	public void parse(Statistics statistics, HttpResponse<String> response, StatisticsCollection statsCollection) {
+
+		List<CSVRecord> csvRecords = CoronaTrackerUtil.convertResponseToCSVRecord(response);
 
 		CSVRecord header = csvRecords.remove(0);
 

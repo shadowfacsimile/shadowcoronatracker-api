@@ -5,6 +5,7 @@ import com.shadow.coronatracker.util.datacreators.CountryCasesGrowthDataCreator;
 import com.shadow.coronatracker.util.datacreators.CountryDeathsGrowthDataCreator;
 import com.shadow.coronatracker.util.datacreators.DataCreator;
 import com.shadow.coronatracker.util.datacreators.DeathsGrowthDataCreator;
+import com.shadow.coronatracker.util.datacreators.IndiaStatsDataCreator;
 import com.shadow.coronatracker.util.datacreators.LocationStatsDataCreator;
 import com.shadow.coronatracker.util.datacreators.SummaryDataCreator;
 
@@ -15,7 +16,8 @@ public enum ResponseStatistics {
 	CASE_GROWTH_COUNTRY(new CountryCasesGrowthDataCreator()), 
 	CASE_GROWTH(new CasesGrowthDataCreator()),
 	DEATH_GROWTH_COUNTRY(new CountryDeathsGrowthDataCreator()), 
-	DEATH_GROWTH(new DeathsGrowthDataCreator());
+	DEATH_GROWTH(new DeathsGrowthDataCreator()),
+	INDIA_STATS(new IndiaStatsDataCreator());
 
 	private final DataCreator dataCreator;
 

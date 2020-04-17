@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.shadow.coronatracker.model.IndiaStats;
 import com.shadow.coronatracker.model.casegrowth.CasesGrowth;
 import com.shadow.coronatracker.model.casegrowth.CountryCasesGrowth;
 import com.shadow.coronatracker.model.deathgrowth.CountryDeathsGrowth;
@@ -22,6 +23,7 @@ public class CoronaDataResponse {
 	private List<CountryCasesGrowth> countryCasesGrowthStats;
 	private List<DeathsGrowth> deathsGrowthStats;
 	private List<CountryDeathsGrowth> countryDeathsGrowthStats;
+	private IndiaStats indiaStats;
 
 	public Summary getSummaryStats() {
 		return summaryStats;
@@ -77,6 +79,14 @@ public class CoronaDataResponse {
 
 	public void setCountryDeathsGrowthStats(List<CountryDeathsGrowth> countryDeathsGrowthStats) {
 		this.countryDeathsGrowthStats = countryDeathsGrowthStats;
+	}
+
+	public IndiaStats getIndiaStats() {
+		return indiaStats;
+	}
+
+	public void setIndiaStats(IndiaStats indiaStats) {
+		this.indiaStats = indiaStats;
 	}
 
 }
